@@ -8,5 +8,6 @@ namespace Truco.Entidades
 {
     public class Class1
     {
+        //Rosso comegatos
     }
 }
