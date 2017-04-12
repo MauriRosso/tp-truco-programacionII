@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // La información general sobre un ensamblado se controla mediante el siguiente 
 // conjunto de atributos. Cambie estos atributos para modificar la información
 // asociada con un ensamblado.
-[assembly: AssemblyTitle("Truco Programacion II")]
+[assembly: AssemblyTitle("Truco.Entidades")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("Truco Programacion II")]
+[assembly: AssemblyProduct("Truco.Entidades")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // El siguiente GUID sirve como identificador de typelib si este proyecto se expone a COM
-[assembly: Guid("2b8a3e3a-d3fd-4f26-afaf-56db5d78a08c")]
+[assembly: Guid("b7846748-d132-4519-8fed-43b6823c088f")]
 
 // La información de versión de un ensamblado consta de los cuatro valores siguientes:
 //
