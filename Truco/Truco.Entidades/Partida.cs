@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Truco.Entidades
 {
-    public class Class1
+    public class Partida
     {
-        //Rosso comegatos
+        
     }
 }
