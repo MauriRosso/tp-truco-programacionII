@@ -8,5 +8,7 @@ namespace Truco.Entidades
 {
     class Mazo
     {
+        public int CantidadCartas { get; set; }
+        public int Valor { get; set; }
     }
 }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Truco.Entidades
 {
-    class Jugador
+    class Mano
     {
-        public string Nombre { get; set; }
+        
     }
 }

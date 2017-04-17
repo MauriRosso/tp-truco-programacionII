@@ -8,6 +8,8 @@ namespace Truco.Entidades
 {
     public class Partida
     {
-        
+        public int ID { get; set; }
+        public int CantidadJugadores { get; set; }
+        public string Nombre { get; set; }
     }
 }

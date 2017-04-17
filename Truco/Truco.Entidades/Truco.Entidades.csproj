@@ -39,6 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cartas.cs" />
+    <Compile Include="Mano.cs" />
     <Compile Include="Mazo.cs" />
     <Compile Include="Partida.cs" />
     <Compile Include="Jugador.cs" />
