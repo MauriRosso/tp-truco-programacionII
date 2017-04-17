@@ -8,6 +8,6 @@ namespace Truco.Entidades
 {
     class Mano
     {
-        
+        //asdasdasdasdasssssssssssssssssssssss   
     }
 }
