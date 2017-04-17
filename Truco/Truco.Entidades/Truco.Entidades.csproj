@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cartas.cs" />
+    <Compile Include="Jugar.cs" />
     <Compile Include="Mano.cs" />
     <Compile Include="Mazo.cs" />
     <Compile Include="Partida.cs" />
