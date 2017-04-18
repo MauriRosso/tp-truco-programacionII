@@ -31,21 +31,23 @@ namespace Truco.Entidades
             ListaOriginal.Add(ancho);
             ListaOriginal.Add(hembra);
             ListaOriginal.Add(sieteOro);
-
             
         }
-        public void MezclarCartas()
-        {
-            Inicializo();
-            for (int i = 0; i < ListaOriginal.Count(); i++)
-            {
-                Random Ran = new Random();
-                
-                
-            }
-            
-            
 
+
+        public static List<Cartas> DesordenarLista<Cartas>(List<Cartas> Input)
+        {
+            List<Cartas> ListaOriginal = Input;
+            List<Cartas> ListaMezclada = new List<Cartas>();
+
+            Random RandNum = new Random();
+            while (ListaOriginal.Count > 0)
+            {
+                int val = RandNum.Next(0, ListaOriginal.Count - 1);
+                ListaMezclada.Add(ListaOriginal[val]);
+                ListaOriginal.RemoveAt(val);
+            }
+            return ListaMezclada;
         }
     }
 }
