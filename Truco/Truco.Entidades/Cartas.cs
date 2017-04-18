@@ -6,16 +6,12 @@ using System.Threading.Tasks;
 
 namespace Truco.Entidades
 {
-    class Cartas
+    public class Cartas
     {
         public Palos Palo { get; set; }
-        public int Numero { get; set; }
+        public Valores Valor { get; set; }
+
     }
-    enum Palos
-    {
-        Espada = 1,
-        Basto = 2,
-        Oro = 3,
-        Copa = 4,
-    }
+    public enum Palos { Espada, Oro, Copa, Basto }
+    public enum Valores { Uno, Dos, Tres, Cuatro, Cinco, Seis, Siete, Diez, Once, Doce }
 }
