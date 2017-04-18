@@ -11,31 +11,32 @@ namespace Truco.Entidades
         public int CantidadCartas { get; set; }
         public List<Cartas> ListaOriginal { get; set; }
         public List<Cartas> ListaMezclada { get; set; }
-        
-
-    //Cartas ancho = new Cartas();
-    //Cartas hembra = new Cartas();
-    //Cartas sieteOro = new Cartas(); 
 
 
-    //public void Inicializo()
-    //{
-    //    ancho.Numero = 1;
-    //    ancho.Palo = Palos.Espada;
-    //    hembra.Numero = 1;
-    //    hembra.Palo = Palos.Basto;
-    //    sieteOro.Numero = 7;
-    //    sieteOro.Palo = Palos.Oro;
-
-    //    ListaOriginal.Add(ancho);
-    //    ListaOriginal.Add(hembra);
-    //    ListaOriginal.Add(sieteOro);
-
-    //}
+        //Cartas ancho = new Cartas();
+        //Cartas hembra = new Cartas();
+        //Cartas sieteOro = new Cartas(); 
 
 
-    private static List<Cartas> DesordenarLista<Cartas>(List<Cartas> Input)
-        {
+        //public void Inicializo()
+        //{
+        //    ancho.Numero = 1;
+        //    ancho.Palo = Palos.Espada;
+        //    hembra.Numero = 1;
+        //    hembra.Palo = Palos.Basto;
+        //    sieteOro.Numero = 7;
+        //    sieteOro.Palo = Palos.Oro;
+
+        //    ListaOriginal.Add(ancho);
+        //    ListaOriginal.Add(hembra);
+        //    ListaOriginal.Add(sieteOro);
+
+        //
+    }
+
+    
+    public static List<Cartas> DesordenarLista<Cartas>(List<Cartas> Input)
+    {
             List<Cartas> ListaOriginal = Input;
             List<Cartas> ListaMezclada = new List<Cartas>();
 
@@ -47,6 +48,6 @@ namespace Truco.Entidades
                 ListaOriginal.RemoveAt(val);
             }
             return ListaMezclada;
-        }
     }
+    
 }
