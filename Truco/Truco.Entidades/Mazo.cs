@@ -12,32 +12,8 @@ namespace Truco.Entidades
         public List<Cartas> ListaOriginal { get; set; }
         public List<Cartas> ListaMezclada { get; set; }
 
-
-        //Cartas ancho = new Cartas();
-        //Cartas hembra = new Cartas();
-        //Cartas sieteOro = new Cartas(); 
-
-
-        //public void Inicializo()
-        //{
-        //    ancho.Numero = 1;
-        //    ancho.Palo = Palos.Espada;
-        //    hembra.Numero = 1;
-        //    hembra.Palo = Palos.Basto;
-        //    sieteOro.Numero = 7;
-        //    sieteOro.Palo = Palos.Oro;
-
-        //    ListaOriginal.Add(ancho);
-        //    ListaOriginal.Add(hembra);
-        //    ListaOriginal.Add(sieteOro);
-
-        //
-    }
-
-    
-    public static List<Cartas> DesordenarLista<Cartas>(List<Cartas> Input)
-    {
-            List<Cartas> ListaOriginal = Input;
+        public List<Cartas> DesordenarLista(List<Cartas> ListaOriginal)
+        {
             List<Cartas> ListaMezclada = new List<Cartas>();
 
             Random RandNum = new Random();
@@ -48,6 +24,37 @@ namespace Truco.Entidades
                 ListaOriginal.RemoveAt(val);
             }
             return ListaMezclada;
+        }       
+        public List<Cartas> RepartirCartas(List<Cartas> ListaMezclada)
+        {
+            ListaMezclada = DesordenarLista(ListaOriginal);
+            foreach (var item in ListaMezclada)
+            {
+                  
+            }
+            return (RepartirCartas);
+        }
+
+        public Mazo mazo = new Mazo();
+        public List<Mazo> CartasPlayer1 = new List<Mazo>();
+        public List<Mazo> CartasPlayer2 = new List<Mazo>();
+        public List<Mazo> CartasPlayer3 = new List<Mazo>();
+        public List<Mazo> CartasPlayer4 = new List<Mazo>();
+
+        public void RepartirCartasParaJugador()
+        {
+            for (int i = 0; i < 3; i++)
+			{
+                CartasPlayer1.Add(Mazo.RepartirCartas);
+                CartasPlayer2.Add(Mazo.RepartirCartas);
+                CartasPlayer3.Add(Mazo.RepartirCartas);
+                CartasPlayer4.Add(Mazo.RepartirCartas);
+            }
+        }
+
+
+        
     }
-    
+  
+
 }
