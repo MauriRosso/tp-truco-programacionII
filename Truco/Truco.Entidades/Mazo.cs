@@ -324,41 +324,51 @@ namespace Truco.Entidades
                 ListaOriginal.RemoveAt(ran);
             }
             return ListaMezclada;
-        }       
+        }
+
         public List<Cartas> RepartirCartas(List<Cartas> ListaMezclada)
         {
-            ListaMezclada = DesordenarLista(ListaOriginal);
+            List<Cartas> ListaElementoARepartir = new List<Cartas>();
             foreach (var item in ListaMezclada)
             {
-                  
+                if (ListaMezclada != null)
+                {                    
+                    ListaElementoARepartir.Add(item);
+                }
+                ListaMezclada.Remove(item);                
             }
-            return (RepartirCartas);
+            return (ListaElementoARepartir);
         }
 
-        public Mazo mazo = new Mazo();
-        public List<Mazo> CartasPlayer1 = new List<Mazo>();
-        public List<Mazo> CartasPlayer2 = new List<Mazo>();
-        public List<Mazo> CartasPlayer3 = new List<Mazo>();
-        public List<Mazo> CartasPlayer4 = new List<Mazo>();
+        public List<Cartas> CartasPlayer1 = new List<Cartas>();
+        public List<Cartas> CartasPlayer2 = new List<Cartas>();
+        public List<Cartas> CartasPlayer3 = new List<Cartas>();
+        public List<Cartas> CartasPlayer4 = new List<Cartas>();
 
-        public void RepartirCartas(int CantidadJug)
+        public void RepartirCartasJugador(int CantidadJug)
         {
-
-        
-        public void RepartirCartasParaJugador()
-        {
-            for (int i = 0; i < 3; i++)
-			{
-                CartasPlayer1.Add(Mazo.RepartirCartas);
-                CartasPlayer2.Add(Mazo.RepartirCartas);
-                CartasPlayer3.Add(Mazo.RepartirCartas);
-                CartasPlayer4.Add(Mazo.RepartirCartas);
+            
+            if (CantidadJug == 2)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    CartasPlayer1.Add(Cartas.RepartirCartas);
+                    CartasPlayer2.Add(Cartas.RepartirCartas);
+                }
             }
-        }
-
-
-        
+            else
+            {
+                if (CantidadJug == 4)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        CartasPlayer1.Add(Cartas.RepartirCartas);
+                        CartasPlayer2.Add(Cartas.RepartirCartas);
+                        CartasPlayer3.Add(Cartas.RepartirCartas);
+                        CartasPlayer4.Add(Cartas.RepartirCartas);
+                    }
+                }
+            }
+        }      
     }
-  
-
 }
