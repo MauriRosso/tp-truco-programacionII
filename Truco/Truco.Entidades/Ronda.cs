@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Truco.Entidades
 {
-    public class Cartas
+    class Ronda
     {
-        public string Palo { get; set; }
-        public int Numero { get; set; }
-        public int Valor { get; set; }
+        public int Mano { get; set; }
     }
 }

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Truco.Entidades
 {
-    class Jugador
+    class Equipo
     {
         public string Nombre { get; set; }
-        public List<Cartas> ListaCartas = new List<Cartas>();
+        public int Puntos { get; set; }
+        public List<Jugador> ListaJugadores = new List<Jugador>();
     }
 }

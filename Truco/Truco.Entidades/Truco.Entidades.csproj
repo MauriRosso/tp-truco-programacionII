@@ -40,12 +40,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cartas.cs" />
+    <Compile Include="Equipo.cs" />
     <Compile Include="Jugar.cs" />
     <Compile Include="Mano.cs" />
     <Compile Include="Mazo.cs" />
     <Compile Include="Partida.cs" />
     <Compile Include="Jugador.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Ronda.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

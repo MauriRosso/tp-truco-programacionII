@@ -312,63 +312,6 @@ namespace Truco.Entidades
                 }
                 ListaOriginal.Add(CartaCarga12);
             }
-        }
-        public List<Cartas> MezclarCartas()
-        {
-            Inicializo();
-            Random RandNum = new Random();
-            while (ListaOriginal.Count > 0)
-            {
-                int ran = RandNum.Next(0, ListaOriginal.Count - 1);
-                ListaMezclada.Add(ListaOriginal[ran]);
-                ListaOriginal.RemoveAt(ran);
-            }
-            return ListaMezclada;
-        }
-
-        public List<Cartas> RepartirCartas(List<Cartas> ListaMezclada)
-        {
-            List<Cartas> ListaElementoARepartir = new List<Cartas>();
-            foreach (var item in ListaMezclada)
-            {
-                if (ListaMezclada != null)
-                {                    
-                    ListaElementoARepartir.Add(item);
-                }
-                ListaMezclada.Remove(item);                
-            }
-            return (ListaElementoARepartir);
-        }
-
-        public List<Cartas> CartasPlayer1 = new List<Cartas>();
-        public List<Cartas> CartasPlayer2 = new List<Cartas>();
-        public List<Cartas> CartasPlayer3 = new List<Cartas>();
-        public List<Cartas> CartasPlayer4 = new List<Cartas>();
-
-        public void RepartirCartasJugador(int CantidadJug)
-        {
-            
-            if (CantidadJug == 2)
-            {
-                for (int i = 0; i < 2; i++)
-                {
-                    CartasPlayer1.Add(Cartas.RepartirCartas);
-                    CartasPlayer2.Add(Cartas.RepartirCartas);
-                }
-            }
-            else
-            {
-                if (CantidadJug == 4)
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        CartasPlayer1.Add(Cartas.RepartirCartas);
-                        CartasPlayer2.Add(Cartas.RepartirCartas);
-                        CartasPlayer3.Add(Cartas.RepartirCartas);
-                        CartasPlayer4.Add(Cartas.RepartirCartas);
-                    }
-                }
-            }
         }      
     }
 }
