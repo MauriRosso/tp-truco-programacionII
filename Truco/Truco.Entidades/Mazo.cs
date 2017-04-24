@@ -17,14 +17,14 @@ namespace Truco.Entidades
             // CARTA 1
             Cartas CartaCarga1espada = new Cartas();
             CartaCarga1espada.Numero = 1;
-            CartaCarga1espada.Palo = "Espada";
+            CartaCarga1espada.Palo = Palos.Espada;
             CartaCarga1espada.Valor = 14;  //VALOR MAXIMO DE UNA CARTA
 
             ListaOriginal.Add(CartaCarga1espada);
 
             Cartas CartaCarga1basto = new Cartas();
             CartaCarga1basto.Numero = 1;
-            CartaCarga1basto.Palo = "Basto";
+            CartaCarga1basto.Palo = Palos.Basto;
             CartaCarga1basto.Valor = 13;
 
             ListaOriginal.Add(CartaCarga1basto);
@@ -36,11 +36,11 @@ namespace Truco.Entidades
                 CartaCarga1restantes.Valor = 8;
                 if (i == 0)
                 {
-                    CartaCarga1restantes.Palo = "Oro";
+                    CartaCarga1restantes.Palo = Palos.Oro;
                 }
                 else
                 {
-                    CartaCarga1restantes.Palo = "Copa";
+                    CartaCarga1restantes.Palo = Palos.Copa;
                 }
                 ListaOriginal.Add(CartaCarga1restantes);
             }
@@ -52,23 +52,23 @@ namespace Truco.Entidades
                 CartaCarga2.Valor = 9;
                 if (i == 0)
                 {
-                    CartaCarga2.Palo = "Oro";
+                    CartaCarga2.Palo = Palos.Oro;
                 }
                 else
                 {
                     if (i == 1)
                     {
-                        CartaCarga2.Palo = "Copa";
+                        CartaCarga2.Palo = Palos.Copa;
                     }
                     else
                     {
                         if (i == 2)
                         {
-                            CartaCarga2.Palo = "Espada";
+                            CartaCarga2.Palo = Palos.Espada;
                         }
                         else
                         {
-                            CartaCarga2.Palo = "Basto";
+                            CartaCarga2.Palo = Palos.Basto;
                         }
                     }
                 }
@@ -82,23 +82,23 @@ namespace Truco.Entidades
                 CartaCarga3.Valor = 10;
                 if (i == 0)
                 {
-                    CartaCarga3.Palo = "Oro";
+                    CartaCarga3.Palo = Palos.Oro;
                 }
                 else
                 {
                     if (i == 1)
                     {
-                        CartaCarga3.Palo = "Copa";
+                        CartaCarga3.Palo = Palos.Copa;
                     }
                     else
                     {
                         if (i == 2)
                         {
-                            CartaCarga3.Palo = "Espada";
+                            CartaCarga3.Palo = Palos.Espada;
                         }
                         else
                         {
-                            CartaCarga3.Palo = "Basto";
+                            CartaCarga3.Palo = Palos.Basto;
                         }
                     }
                 }
@@ -112,23 +112,23 @@ namespace Truco.Entidades
                 CartaCarga4.Valor = 1;
                 if (i == 0)
                 {
-                    CartaCarga4.Palo = "Espada";
+                    CartaCarga4.Palo = Palos.Oro;
                 }
                 else
                 {
                     if (i == 1)
                     {
-                        CartaCarga4.Palo = "Copa";
+                        CartaCarga4.Palo = Palos.Copa;
                     }
                     else
                     {
                         if (i == 2)
                         {
-                            CartaCarga4.Palo = "Oro";
+                            CartaCarga4.Palo = Palos.Espada;
                         }
                         else
                         {
-                            CartaCarga4.Palo = "Basto";
+                            CartaCarga4.Palo = Palos.Basto;
                         }
                     }
                 }
@@ -142,23 +142,23 @@ namespace Truco.Entidades
                 CartaCarga5.Valor = 2;
                 if (i == 0)
                 {
-                    CartaCarga5.Palo = "Espada";
+                    CartaCarga5.Palo = Palos.Espada;
                 }
                 else
                 {
                     if (i == 1)
                     {
-                        CartaCarga5.Palo = "Copa";
+                        CartaCarga5.Palo = Palos.Copa;
                     }
                     else
                     {
                         if (i == 2)
                         {
-                            CartaCarga5.Palo = "Oro";
+                            CartaCarga5.Palo = Palos.Oro;
                         }
                         else
                         {
-                            CartaCarga5.Palo = "Basto";
+                            CartaCarga5.Palo = Palos.Basto;
                         }
                     }
                 }
@@ -172,23 +172,23 @@ namespace Truco.Entidades
                 CartaCarga6.Valor = 3;
                 if (i == 0)
                 {
-                    CartaCarga6.Palo = "Espada";
+                    CartaCarga6.Palo = Palos.Espada;
                 }
                 else
                 {
                     if (i == 1)
                     {
-                        CartaCarga6.Palo = "Copa";
+                        CartaCarga6.Palo = Palos.Copa;
                     }
                     else
                     {
                         if (i == 2)
                         {
-                            CartaCarga6.Palo = "Oro";
+                            CartaCarga6.Palo = Palos.Oro;
                         }
                         else
                         {
-                            CartaCarga6.Palo = "Basto";
+                            CartaCarga6.Palo = Palos.Basto;
                         }
                     }
                 }
@@ -202,24 +202,24 @@ namespace Truco.Entidades
                 CartaCarga7.Valor = 4;
                 if (i == 0)
                 {
-                    CartaCarga7.Palo = "Copa";
+                    CartaCarga7.Palo = Palos.Copa;
                 }
                 else
                 {
-                    CartaCarga7.Palo = "Basto";
+                    CartaCarga7.Palo = Palos.Basto;
                 }
                 ListaOriginal.Add(CartaCarga7);
             }
             Cartas CartaCarga7oro = new Cartas();
             CartaCarga7oro.Numero = 7;
             CartaCarga7oro.Valor = 11;
-            CartaCarga7oro.Palo = "Oro";
+            CartaCarga7oro.Palo = Palos.Oro;
             ListaOriginal.Add(CartaCarga7oro);
 
             Cartas CartaCarga7espada = new Cartas();
             CartaCarga7espada.Numero = 7;
             CartaCarga7espada.Valor = 12;
-            CartaCarga7espada.Palo = "Espada";
+            CartaCarga7espada.Palo = Palos.Espada;
             ListaOriginal.Add(CartaCarga7espada);
 
             //CARTA 10
@@ -230,23 +230,23 @@ namespace Truco.Entidades
                 CartaCarga10.Valor = 5;
                 if (i == 0)
                 {
-                    CartaCarga10.Palo = "Espada";
+                    CartaCarga10.Palo = Palos.Espada;
                 }
                 else
                 {
                     if (i == 1)
                     {
-                        CartaCarga10.Palo = "Copa";
+                        CartaCarga10.Palo = Palos.Copa;
                     }
                     else
                     {
                         if (i == 2)
                         {
-                            CartaCarga10.Palo = "Oro";
+                            CartaCarga10.Palo = Palos.Oro;
                         }
                         else
                         {
-                            CartaCarga10.Palo = "Basto";
+                            CartaCarga10.Palo = Palos.Basto;
                         }
                     }
                 }
@@ -260,23 +260,23 @@ namespace Truco.Entidades
                 CartaCarga11.Valor = 6;
                 if (i == 0)
                 {
-                    CartaCarga11.Palo = "Espada";
+                    CartaCarga11.Palo = Palos.Basto;
                 }
                 else
                 {
                     if (i == 1)
                     {
-                        CartaCarga11.Palo = "Copa";
+                        CartaCarga11.Palo = Palos.Copa;
                     }
                     else
                     {
                         if (i == 2)
                         {
-                            CartaCarga11.Palo = "Oro";
+                            CartaCarga11.Palo = Palos.Oro;
                         }
                         else
                         {
-                            CartaCarga11.Palo = "Basto";
+                            CartaCarga11.Palo = Palos.Espada;
                         }
                     }
                 }
@@ -290,23 +290,23 @@ namespace Truco.Entidades
                 CartaCarga12.Valor = 7;
                 if (i == 0)
                 {
-                    CartaCarga12.Palo = "Espada";
+                    CartaCarga12.Palo = Palos.Oro;
                 }
                 else
                 {
                     if (i == 1)
                     {
-                        CartaCarga12.Palo = "Copa";
+                        CartaCarga12.Palo = Palos.Espada;
                     }
                     else
                     {
                         if (i == 2)
                         {
-                            CartaCarga12.Palo = "Oro";
+                            CartaCarga12.Palo = Palos.Basto;
                         }
                         else
                         {
-                            CartaCarga12.Palo = "Basto";
+                            CartaCarga12.Palo = Palos.Copa;
                         }
                     }
                 }

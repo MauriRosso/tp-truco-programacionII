@@ -8,8 +8,12 @@ namespace Truco.Entidades
 {
     public class Cartas
     {
-        public string Palo { get; set; }
+        public Palos Palo { get; set; }
         public int Numero { get; set; }
         public int Valor { get; set; }
+    }
+    public enum Palos
+    {
+        Espada,Basto,Oro,Copa,
     }
 }
