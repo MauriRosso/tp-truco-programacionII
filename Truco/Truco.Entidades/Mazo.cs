@@ -9,94 +9,75 @@ namespace Truco.Entidades
     public class Mazo
     {
         //public int CantidadCartas { get; set; }
-        public List<Cartas> ListaOriginal { get; set; }
+        public List<Cartas> ListaOriginal = new List<Cartas>();
 
-        public Inicializo() //Cargo las cartas.
+        public  Mazo() //Cargo las cartas.
         {
-            // CARTA 1
-            Cartas CartaCarga1espada = new Cartas();
-            CartaCarga1espada.Numero = 1;
-            CartaCarga1espada.Palo = Palos.Espada;
-            CartaCarga1espada.Valor = 14;  //VALOR MAXIMO DE UNA CARTA           
-            ListaOriginal.Add(CartaCarga1espada);
-
-            Cartas CartaCarga1basto = new Cartas();
-            CartaCarga1basto.Numero = 1;
-            CartaCarga1basto.Palo = Palos.Basto;
-            CartaCarga1basto.Valor = 13;
-
-            ListaOriginal.Add(CartaCarga1basto);
+            // CARTA 1    
+            ListaOriginal.Add(new Cartas(Palos.Espada, 1, 14));
+            ListaOriginal.Add(new Cartas(Palos.Basto, 1, 13));
 
             for (int i = 0; i < 2; i++)
             {
-                Cartas CartaCarga1restantes = new Cartas();
-                CartaCarga1restantes.Numero = 1;
-                CartaCarga1restantes.Valor = 8;
                 if (i == 0)
                 {
-                    CartaCarga1restantes.Palo = Palos.Oro;
+                    ListaOriginal.Add(new Cartas(Palos.Oro, 1, 8));
                 }
                 else
                 {
-                    CartaCarga1restantes.Palo = Palos.Copa;
+                    ListaOriginal.Add(new Cartas(Palos.Copa, 1, 8));
                 }
-                ListaOriginal.Add(CartaCarga1restantes);
+                
             }
             // CARTA 2
             for (int i = 0; i < 4; i++)
             {
-                Cartas CartaCarga2 = new Cartas();
-                CartaCarga2.Numero = 2;
-                CartaCarga2.Valor = 9;
+                //CartaCarga2.Valor = 9;
                 if (i == 0)
                 {
-                    CartaCarga2.Palo = Palos.Oro;
+                    ListaOriginal.Add(new Cartas(Palos.Copa, 2, 9));
                 }
                 else
                 {
                     if (i == 1)
                     {
-                        CartaCarga2.Palo = Palos.Copa;
+                        ListaOriginal.Add(new Cartas(Palos.Espada, 2, 9));
                     }
                     else
                     {
                         if (i == 2)
                         {
-                            CartaCarga2.Palo = Palos.Espada;
+                            ListaOriginal.Add(new Cartas(Palos.Basto, 2, 9));
                         }
                         else
                         {
-                            CartaCarga2.Palo = Palos.Basto;
+                            ListaOriginal.Add(new Cartas(Palos.Oro, 2, 9));
                         }
                     }
                 }
-                ListaOriginal.Add(CartaCarga2);
             }
             // CARTA 3
             for (int i = 0; i < 4; i++)
             {
-                Cartas CartaCarga3 = new Cartas();
-                CartaCarga3.Numero = 3;
-                CartaCarga3.Valor = 10;
                 if (i == 0)
                 {
-                    CartaCarga3.Palo = Palos.Oro;
+                    ListaOriginal.Add(new Cartas(Palos.Oro, 3, 10));
                 }
                 else
                 {
                     if (i == 1)
                     {
-                        CartaCarga3.Palo = Palos.Copa;
+                        ListaOriginal.Add(new Cartas(Palos.Espada, 3, 10));
                     }
                     else
                     {
                         if (i == 2)
                         {
-                            CartaCarga3.Palo = Palos.Espada;
+                            ListaOriginal.Add(new Cartas(Palos.Basto, 3, 10));
                         }
                         else
                         {
-                            CartaCarga3.Palo = Palos.Basto;
+                            ListaOriginal.Add(new Cartas(Palos.Copa, 3, 10));
                         }
                     }
                 }
@@ -314,7 +295,6 @@ namespace Truco.Entidades
         public List<Cartas> MezclarCartas()
         {
             List<Cartas> ListaMezclada = new List<Cartas>();
-            Inicializo();
             Random RandNum = new Random();
             while (ListaOriginal.Count > 0)
             {

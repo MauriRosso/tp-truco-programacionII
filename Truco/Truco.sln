@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Truco.Entidades", "Truco.Entidades\Truco.Entidades.csproj", "{85AF3756-D2FD-4888-BD9B-01CA66F08710}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Truco.Web", "Truco.Web\Truco.Web.csproj", "{6F50322D-7C1F-4634-A37E-B102547F60FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{85AF3756-D2FD-4888-BD9B-01CA66F08710}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85AF3756-D2FD-4888-BD9B-01CA66F08710}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85AF3756-D2FD-4888-BD9B-01CA66F08710}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F50322D-7C1F-4634-A37E-B102547F60FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F50322D-7C1F-4634-A37E-B102547F60FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F50322D-7C1F-4634-A37E-B102547F60FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F50322D-7C1F-4634-A37E-B102547F60FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
