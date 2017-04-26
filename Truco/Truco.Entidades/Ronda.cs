@@ -8,6 +8,6 @@ namespace Truco.Entidades
 {
     class Ronda
     {
-        public int Mano { get; set; }
+        public int Mano { get;}
     }
 }

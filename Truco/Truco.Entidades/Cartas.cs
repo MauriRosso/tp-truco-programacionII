@@ -8,9 +8,9 @@ namespace Truco.Entidades
 {
     public class Cartas
     {
-        public Palos Palo { get; set; }
-        public int Numero { get; set; }
-        public int Valor { get; set; }
+        public Palos Palo { get;}
+        public int Numero { get;}
+        public int Valor { get;}
     }
     public enum Palos
     {

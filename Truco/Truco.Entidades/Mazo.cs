@@ -8,18 +8,16 @@ namespace Truco.Entidades
 {
     public class Mazo
     {
-        public int CantidadCartas { get; set; }
+        //public int CantidadCartas { get; set; }
         public List<Cartas> ListaOriginal { get; set; }
-        public List<Cartas> ListaMezclada { get; set; }
 
-        public void Inicializo() //Cargo las cartas.
+        public Inicializo() //Cargo las cartas.
         {
             // CARTA 1
             Cartas CartaCarga1espada = new Cartas();
             CartaCarga1espada.Numero = 1;
             CartaCarga1espada.Palo = Palos.Espada;
-            CartaCarga1espada.Valor = 14;  //VALOR MAXIMO DE UNA CARTA
-
+            CartaCarga1espada.Valor = 14;  //VALOR MAXIMO DE UNA CARTA           
             ListaOriginal.Add(CartaCarga1espada);
 
             Cartas CartaCarga1basto = new Cartas();
@@ -312,6 +310,21 @@ namespace Truco.Entidades
                 }
                 ListaOriginal.Add(CartaCarga12);
             }
-        }      
-    }
+        }
+        public List<Cartas> MezclarCartas()
+        {
+            List<Cartas> ListaMezclada = new List<Cartas>();
+            Inicializo();
+            Random RandNum = new Random();
+            while (ListaOriginal.Count > 0)
+            {
+                int ran = RandNum.Next(0, ListaOriginal.Count - 1);
+                ListaMezclada.Add(ListaOriginal[ran]);
+                ListaOriginal.RemoveAt(ran);
+            }
+            ListaOriginal = ListaMezclada;
+            return ListaOriginal;
+        }
+    }      
 }
+
