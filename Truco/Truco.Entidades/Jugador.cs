@@ -9,6 +9,7 @@ namespace Truco.Entidades
     class Jugador
     {
         public string Nombre { get; set; }
+        public int Mano { get;}
         public List<Cartas> ListaCartas = new List<Cartas>();
     }
 }
