@@ -12,7 +12,8 @@ namespace Truco.Entidades
         public int Numero { get;}
         public int Valor { get;}
 
-        public Cartas (Palos palo, int numero, int valor)
+        // VER EL ERROR DEL CONSTRUCTOR QUE DA
+        public Cartas(Palos palo, int numero, int valor)
         {
             Palo = palo;
             Numero = numero;

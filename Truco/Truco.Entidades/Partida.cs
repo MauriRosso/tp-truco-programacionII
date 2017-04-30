@@ -12,7 +12,6 @@ namespace Truco.Entidades
         public int CantidadJugadores { get; set; }
         public string Nombre { get; set; }
 
-        //Donde me marca error es porque tengo que recorrer la lista de equipos y agregarle las propiedades que faltan
         Equipo Equipo1 = new Equipo();
         Equipo Equipo2 = new Equipo();
 
@@ -26,49 +25,73 @@ namespace Truco.Entidades
         //        Jugador jugador = new Jugador();
         //    }
         //}
-        public void RepartirCartas(int CantidadJug)
+        public void CrearJugadores(int CantJug)
         {
-            Mazo MezclaMazo = new Mazo();
-            MezclaMazo.MezclarCartas();
-
-            for (int i = 0; i < CantidadJug; i++)
+            for (int i = 0; i < CantJug; i++)
             {
-                Jugador Jdr = new Jugador();
-                for (int x = 0; x < 3; x++)
-                {
-                    foreach (var item in MezclaMazo.ListaOriginal)
-                    {
-                        if (item != null) //Si la carta esta disponible.
-                        {
-                            Jdr.ListaCartas.Add(item);
-                            MezclaMazo.ListaOriginal.Remove(item);
-                            break;
-                        }
-                    }
-                }
-                if (CantidadJug == 2)
+                Jugador Jdr = new Jugador ();
+                if (CantJug == 2)
                 {
                     if (i == 0)
                     {
-                        Equipo1.ListaJugadores.Add(Jdr);
+                        Jdr.Nombre = "Pedro";
+                        Equipo1.ListaJugadores.Add(Jdr);   
                     }
                     else
                     {
-                        Equipo2.ListaJugadores.Add(Jdr);
+                        Jdr.Nombre = "Juan";
+                        Equipo2.ListaJugadores.Add(Jdr);   
                     }
                 }
                 else
                 {
                     if (i == 0 || i == 1)
                     {
+                        Jdr.Nombre = "Pedro";
+                        Equipo1.ListaJugadores.Add(Jdr);
+                        Jdr.Nombre = "Pablo";
                         Equipo1.ListaJugadores.Add(Jdr);
                     }
                     else
                     {
+                        Jdr.Nombre = "Juan";
+                        Equipo2.ListaJugadores.Add(Jdr);
+                        Jdr.Nombre = "Jose";
                         Equipo2.ListaJugadores.Add(Jdr);
                     }
+                }               
+            }
+        }
+        public void RepartirCartas(int CantidadJug)
+        {
+            Mazo MezclaMazo = new Mazo();
+            MezclaMazo.MezclarCartas();
+            //REPARTO CARTAS EQUIPO 1.
+            foreach (var Jug in Equipo1.ListaJugadores)
+            {
+                foreach (var Car in MezclaMazo.ListaOriginal)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Jug.ListaCartas.Add(Car);
+                        MezclaMazo.ListaOriginal.Remove(Car);  
+                    }                   
+                    break;
                 }
             }
+            //REPARTO CARTAS EQUIPO 2.
+            foreach (var Jug in Equipo2.ListaJugadores)
+            {
+                foreach (var Car in MezclaMazo.ListaOriginal)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Jug.ListaCartas.Add(Car);
+                        MezclaMazo.ListaOriginal.Remove(Car);
+                    }
+                    break;
+                }
+            }           
         }
 
         //public void AsignarMano(int CantidadJug, int NumeroRonda) //Este metodo la primera vez, asigna a cada jugador un valor Mano de 0 a CantJug, y despues le aumenta +1
@@ -137,16 +160,15 @@ namespace Truco.Entidades
         //        }
         //    }
         //}
-        public void ComenzarPartida(int CantidadJug)
+        public void JugarMano(int CantidadJug)
         {
-            Equipo Equipo = new Equipo();
-            Mazo CartasMazo = new Mazo();
             this.RepartirCartas(CantidadJug);
         }
-        public void MetodoJugarGeneral(int CantidadJugadores) //Este metodo tiene que tener todos los metodos necesarios para jugar una mano.
+        public void MetodoJugarGeneral(int CantidadJugadores)
         {
             //Aca van todos los metodos que vayamos haciendo para jugar.
-            ComenzarPartida(CantidadJugadores);
+            CrearJugadores(CantidadJugadores);
+            JugarMano(CantidadJugadores);
         }
     }
 }
