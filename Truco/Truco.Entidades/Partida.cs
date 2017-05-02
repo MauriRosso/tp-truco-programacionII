@@ -11,20 +11,11 @@ namespace Truco.Entidades
         public int ID { get;}
         public int CantidadJugadores { get; set; }
         public string Nombre { get; set; }
+        public int NumeroRonda { get; set; }
 
         Equipo Equipo1 = new Equipo();
         Equipo Equipo2 = new Equipo();
 
-        //CONSULTA: SI EN EL METODO CREAR JUGADOR, INSTANCIO X CANT DE JUGADORES, IGUAL QUE EN EL METODO REPARTIRCARTAS Y ASIGNAR MANO, SON TODOS JUGADORES DIFERENTES? DIGAMOS QUE SE CREARIAN SIEMPRE JUGADORES DIFERETES
-        //ENTONCES NO HABRIA QEU HACER UN METODO O ALGO QUE CREE LOS JUGADORES NECESARIOS PARA LA PARTIDA Y DESPUES USARLO EN TODOS LOS OTROS METODOS
-        //public void CrearJugador(int CantidadJug)
-        //{
-        //    for (int i = 0; i < CantidadJug; i++)
-        //    {
-        //        //Jugador jugador[i] = new Jugador();
-        //        Jugador jugador = new Jugador();
-        //    }
-        //}
         public void CrearJugadores(int CantJug)
         {
             for (int i = 0; i < CantJug; i++)
@@ -94,75 +85,78 @@ namespace Truco.Entidades
             }           
         }
 
-        //public void AsignarMano(int CantidadJug, int NumeroRonda) //Este metodo la primera vez, asigna a cada jugador un valor Mano de 0 a CantJug, y despues le aumenta +1
-        //{
-        //    for (int i = 0; i < CantidadJug; i++)
-        //    {
-        //        Jugador jugador = new Jugador();
-        //        if (NumeroRonda == 0)
-        //        {
-        //            if (CantidadJug == 2)
-        //            {
-        //                if (i == 0)
-        //                {
-        //                    //jugador[i].mano = 0
-        //                    jugador.Mano = 0;
-        //                }
-        //                else
-        //                {
-        //                    jugador.Mano = 1;
-        //                }
-        //            }
-        //            if (CantidadJug == 4)
-        //            {
-        //                if (i == 0)
-        //                {
-        //                    jugador.Mano = 0;
-        //                }
-        //                else if (i == 1)
-        //                {
-        //                    jugador.Mano = 1;
-        //                }
-        //                else if (i == 2)
-        //                {
-        //                    jugador.Mano = 2;
-        //                }
-        //                else
-        //                {
-        //                    jugador.Mano = 3;
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (CantidadJug == 2)
-        //            {
-        //                for (int x = 0; x < CantidadJug; x++)
-        //                {
-        //                    jugador.Mano++;
-        //                    if (jugador.Mano == CantidadJug)
-        //                    {
-        //                        jugador.Mano = 0;
-        //                    }
-        //                }
-        //            }
-        //            if (CantidadJug == 4)
-        //            {
-        //                for (int z = 0; z < CantidadJug; z++)
-        //                {
-        //                    jugador.Mano++;
-        //                    if (jugador.Mano == CantidadJug)
-        //                    {
-        //                        jugador.Mano = 0;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+        public void AsignarMano(int CantidadJug, int NumeroRonda) //Este metodo la primera vez, asigna a cada jugador un valor Mano de 0 a CantJug, y despues le aumenta +1
+        {
+            for (int i = 0; i < (CantidadJug/2); i++)
+            {
+                if (NumeroRonda == 0)
+                {
+                    if (CantidadJug == 2)
+                    {
+                        if (i == 0)
+                        {
+                            Equipo1.ListaJugadores[i].Mano = 0;
+                        }
+                        else
+                        {
+                            Equipo2.ListaJugadores[i].Mano = 1;
+                        }
+                    }
+                    if (CantidadJug == 4)
+                    {
+                        if (i == 0)
+                        {
+                            Equipo1.ListaJugadores[i].Mano = 0;
+                            Equipo2.ListaJugadores[i].Mano = 1;
+                        }                                                 
+                        else
+                        {
+                            Equipo1.ListaJugadores[i].Mano = 2;
+                            Equipo2.ListaJugadores[i].Mano = 3;
+                        }
+                    }
+                }
+                else
+                {
+                    if (CantidadJug == 2)
+                    {
+                        for (int x = 0; x < (CantidadJug / 2); x++)
+                        {
+                            Equipo1.ListaJugadores[i].Mano++;
+                            Equipo2.ListaJugadores[i].Mano++;
+                            if (Equipo1.ListaJugadores[i].Mano == CantidadJug)
+                            {
+                                Equipo1.ListaJugadores[i].Mano = 0;
+                            }
+                            if (Equipo2.ListaJugadores[i].Mano == CantidadJug)
+                            {
+                                Equipo2.ListaJugadores[i].Mano = 0;
+                            }
+                        }
+                    }
+                    if (CantidadJug == 4)
+                    {
+                        for (int z = 0; z < (CantidadJug / 2); z++)
+                        {
+                            Equipo1.ListaJugadores[i].Mano++;
+                            Equipo2.ListaJugadores[i].Mano++;
+                            if (Equipo1.ListaJugadores[i].Mano == CantidadJug)
+                            {
+                                Equipo1.ListaJugadores[i].Mano = 0;
+                            }
+                            if (Equipo2.ListaJugadores[i].Mano == CantidadJug)
+                            {
+                                Equipo2.ListaJugadores[i].Mano = 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         public void JugarMano(int CantidadJug)
         {
             this.RepartirCartas(CantidadJug);
+            this.AsignarMano(CantidadJug, NumeroRonda);
         }
         public void MetodoJugarGeneral(int CantidadJugadores)
         {
