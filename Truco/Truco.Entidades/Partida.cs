@@ -85,78 +85,51 @@ namespace Truco.Entidades
             }           
         }
 
-        public void AsignarMano(int CantidadJug, int NumeroRonda) //Este metodo la primera vez, asigna a cada jugador un valor Mano de 0 a CantJug, y despues le aumenta +1
+        public void AsignarMano(int NroRonda) //ASIGNAMOS VALORES (como una especie de "prioridad"), PORQUE NECESITAMOS SABER QUIEN ES MANO DE QUIEN (cuando haya situaciones de empate, el que tenga el numero MAS ALTO en su propiedad "Mano", será el que gane / el que cante los puntos / etc.)
         {
-            for (int i = 0; i < (CantidadJug/2); i++)
-            {
-                if (NumeroRonda == 0)
+
+                if (NroRonda == 0) //Si es la primera mano del juego
                 {
-                    if (CantidadJug == 2)
-                    {
-                        if (i == 0)
-                        {
-                            Equipo1.ListaJugadores[i].Mano = 0;
-                        }
-                        else
-                        {
-                            Equipo2.ListaJugadores[i].Mano = 1;
-                        }
-                    }
-                    if (CantidadJug == 4)
-                    {
-                        if (i == 0)
-                        {
-                            Equipo1.ListaJugadores[i].Mano = 0;
-                            Equipo2.ListaJugadores[i].Mano = 1;
-                        }                                                 
-                        else
-                        {
-                            Equipo1.ListaJugadores[i].Mano = 2;
-                            Equipo2.ListaJugadores[i].Mano = 3;
-                        }
-                    }
+                    Equipo1.ListaJugadores[0].Mano = 4;
+                    Equipo2.ListaJugadores[0].Mano = 3;
+                    Equipo1.ListaJugadores[1].Mano = 2;
+                    Equipo2.ListaJugadores[1].Mano = 1;                 
                 }
                 else
                 {
-                    if (CantidadJug == 2)
+                    //Se incrementa +1 en el valor Mano de cada jugador.
+                    foreach (var item in Equipo1.ListaJugadores)
                     {
-                        for (int x = 0; x < (CantidadJug / 2); x++)
+                        if (item.Mano + 1 <= 4)
                         {
-                            Equipo1.ListaJugadores[i].Mano++;
-                            Equipo2.ListaJugadores[i].Mano++;
-                            if (Equipo1.ListaJugadores[i].Mano == CantidadJug)
-                            {
-                                Equipo1.ListaJugadores[i].Mano = 0;
-                            }
-                            if (Equipo2.ListaJugadores[i].Mano == CantidadJug)
-                            {
-                                Equipo2.ListaJugadores[i].Mano = 0;
-                            }
+                            item.Mano += 1;  
+                        }
+                        else
+                        {
+                            item.Mano = 1;
                         }
                     }
-                    if (CantidadJug == 4)
+                    foreach (var item in Equipo2.ListaJugadores)
                     {
-                        for (int z = 0; z < (CantidadJug / 2); z++)
+                        if (item.Mano + 1 <= 4)
                         {
-                            Equipo1.ListaJugadores[i].Mano++;
-                            Equipo2.ListaJugadores[i].Mano++;
-                            if (Equipo1.ListaJugadores[i].Mano == CantidadJug)
-                            {
-                                Equipo1.ListaJugadores[i].Mano = 0;
-                            }
-                            if (Equipo2.ListaJugadores[i].Mano == CantidadJug)
-                            {
-                                Equipo2.ListaJugadores[i].Mano = 0;
-                            }
+                            item.Mano += 1;
                         }
+                        else
+                        {
+                            item.Mano = 1;
+                        }   
                     }
                 }
-            }
+            // CONCLUSION: Para comenzar a jugar una mano, tenemos que preguntar que jugador tiene un valor "4" en su propiedad "Mano" (osea, el valor mas alto que se puede tener).
         }
+        
+        
         public void JugarMano(int CantidadJug)
         {
             this.RepartirCartas(CantidadJug);
-            this.AsignarMano(CantidadJug, NumeroRonda);
+            this.AsignarMano(NumeroRonda);
+
         }
         public void MetodoJugarGeneral(int CantidadJugadores)
         {
