@@ -8,7 +8,7 @@ namespace Truco.Entidades
 {
     public class Partida
     {
-        public int ID { get;}
+        public int ID { get; set; }
         public int CantidadJugadores { get; set; }
         public string Nombre { get; set; }
         public int NumeroRonda { get; set; }
@@ -21,36 +21,33 @@ namespace Truco.Entidades
             for (int i = 0; i < CantJug; i++)
             {
                 Jugador Jdr = new Jugador ();
-                if (CantJug == 2)
-                {
+                          
                     if (i == 0)
                     {
                         Jdr.Nombre = "Pedro";
-                        Equipo1.ListaJugadores.Add(Jdr);   
-                    }
-                    else
-                    {
-                        Jdr.Nombre = "Juan";
-                        Equipo2.ListaJugadores.Add(Jdr);   
-                    }
-                }
-                else
-                {
-                    if (i == 0 || i == 1)
-                    {
-                        Jdr.Nombre = "Pedro";
-                        Equipo1.ListaJugadores.Add(Jdr);
-                        Jdr.Nombre = "Pablo";
                         Equipo1.ListaJugadores.Add(Jdr);
                     }
                     else
                     {
-                        Jdr.Nombre = "Juan";
-                        Equipo2.ListaJugadores.Add(Jdr);
-                        Jdr.Nombre = "Jose";
-                        Equipo2.ListaJugadores.Add(Jdr);
-                    }
-                }               
+                        if (i == 1)
+	                    {
+		                    Jdr.Nombre = "Pablo";
+                            Equipo1.ListaJugadores.Add(Jdr);
+	                    }
+                        else
+                        {
+                            if (i == 2)
+                            {
+                                Jdr.Nombre = "Juan";
+                                Equipo2.ListaJugadores.Add(Jdr);   
+                            }
+                            else
+                            {
+                                Jdr.Nombre = "Jose";
+                                Equipo2.ListaJugadores.Add(Jdr);
+                            }                          
+                        }  
+                    }                                               
             }
         }
         public void RepartirCartas(int CantidadJug)
@@ -60,27 +57,27 @@ namespace Truco.Entidades
             //REPARTO CARTAS EQUIPO 1.
             foreach (var Jug in Equipo1.ListaJugadores)
             {
-                foreach (var Car in MezclaMazo.ListaOriginal)
+                for (int i = 0; i < 3; i++)
                 {
-                    for (int i = 0; i < 3; i++)
+                    foreach (var Car in MezclaMazo.ListaOriginal)
                     {
                         Jug.ListaCartas.Add(Car);
-                        MezclaMazo.ListaOriginal.Remove(Car);  
-                    }                   
-                    break;
+                        MezclaMazo.ListaOriginal.Remove(Car);
+                        break;
+                    }
                 }
             }
             //REPARTO CARTAS EQUIPO 2.
             foreach (var Jug in Equipo2.ListaJugadores)
             {
-                foreach (var Car in MezclaMazo.ListaOriginal)
+                for (int i = 0; i < 3; i++)
                 {
-                    for (int i = 0; i < 3; i++)
+                    foreach (var Car in MezclaMazo.ListaOriginal)
                     {
                         Jug.ListaCartas.Add(Car);
                         MezclaMazo.ListaOriginal.Remove(Car);
+                        break;
                     }
-                    break;
                 }
             }           
         }
@@ -235,6 +232,7 @@ namespace Truco.Entidades
                                 {
                                     NumMayor = 0;
                                 }
+                                x = 1;
                             }                          
                             else
                             {
@@ -247,6 +245,7 @@ namespace Truco.Entidades
                                 }
                             }
                         }
+                        item.PuntosEnvido = NumMayor;
                     }
                 }
             }
@@ -359,6 +358,7 @@ namespace Truco.Entidades
                                 {
                                     NumMayor = 0;
                                 }
+                                x = 1;
                             }
                             else
                             {
