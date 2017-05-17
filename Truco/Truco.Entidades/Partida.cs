@@ -376,11 +376,63 @@ namespace Truco.Entidades
                 }
             }
         }
-        public void JugarMano()
+        private void MetodoGanadorPuntosEnvido()
         {
-            
+            int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
+            int idMayorEquipo1 = Equipo1.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo1).ID;//Saco el mayor del equipo 1
+
+            int mayorEquipo2 = Equipo2.ListaJugadores.Max(x2 => x2.PuntosEnvido);
+            int idMayorEquipo2 = Equipo2.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo2).ID;//Saco el mayor del equipo 2
+
+            if (mayorEquipo1 > mayorEquipo2)
+            {
+                Equipo1.Puntos += 2;
+            }
+            else if (mayorEquipo2 > mayorEquipo1)
+            {
+                Equipo2.Puntos += 2;
+            }
+            else
+            {
+                int NroMano1 = 0;
+                int NroMano2 = 0;
+                foreach (var JugE1 in Equipo1.ListaJugadores)
+                {
+                    if (JugE1.ID == idMayorEquipo1)
+                    {
+                        NroMano1 = JugE1.Mano;
+                    }
+                }
+                foreach (var JugE2 in Equipo2.ListaJugadores)
+                {
+                    if (JugE2.ID == idMayorEquipo2)
+                    {
+                        NroMano2 = JugE2.Mano;
+                    }
+                }
+
+                if (NroMano1 > NroMano2)
+                {
+                    Equipo1.Puntos += 2;
+                }
+                else
+                {
+                    Equipo2.Puntos += 2;
+                }
+            }
+
         }
-        
+
+        public void JugarMano(int CantJug)
+        {
+            PrepararMano(CantJug);
+            Acciones Acc = new Acciones();
+            if (Acc.Envido)
+            {
+                MetodoGanadorPuntosEnvido();             
+            }
+        }
+
         public void PrepararMano(int CantidadJug)
         {
             this.RepartirCartas(CantidadJug);
@@ -391,7 +443,7 @@ namespace Truco.Entidades
         {
             //Aca van todos los metodos que vayamos haciendo para jugar.
             CrearJugadores(CantidadJugadores);
-            PrepararMano(CantidadJugadores);
+            JugarMano(CantidadJugadores);
         }
     }
 }

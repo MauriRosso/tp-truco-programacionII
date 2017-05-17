@@ -13,6 +13,7 @@ namespace Truco.Entidades
         public bool Turno { get; set; } //Si esta en true, le toca jugar a ese jugador.
         public int PuntosEnvido { get; set; }
         public bool TieneFlor { get; set; }
+        public int ID { get; set; }
 
         public List<Cartas> ListaCartas = new List<Cartas>();
     }
