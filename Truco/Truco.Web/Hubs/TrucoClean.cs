@@ -4,31 +4,68 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Truco.Entidades;
 
 namespace Truco.Web.Hubs
 {
     [HubName("truco")]
     public class Truco : Hub
     {
-        public static Juego juego = new Juego();
+        public static Partida juego = new Partida();
+        public static Equipo Equipo1 = new Equipo();
+        public static Equipo Equipo2 = new Equipo();
 
         public void AgregarJugador(string nombre)
         {
 
-            // Si el juego esta completo...
-            Clients.Caller.mostrarmensaje("El juego ya está completo!");
+            Jugador Jugador = new Jugador();
 
-            // Sino ...
-            Clients.Others.mostrarnuevousuario(nombre);
+            if (Equipo1.ListaJugadores.Count() == 2)
+            {
+                if (Equipo2.ListaJugadores.Count() == 2)
+                {
+                    // Si el juego esta completo...
+                    Clients.Caller.mostrarmensaje("El juego ya está completo!");
+                }
+                else
+                {
+                    if (Equipo2.ListaJugadores.Count() == 1)
+                    {
+                        Clients.All.mostrarpuntos("Ellos", 0);
+                        Clients.All.mostrarpuntos("Nosotros", 0);
+                    }
+                    // Sino ...
+                    Jugador.Nombre = nombre;
+                    Equipo2.ListaJugadores.Add(Jugador);
+                    Clients.Others.mostrarnuevousuario(nombre);
 
-            // Por cada jugador
-            Clients.All.mostrarnombre(jugador);
+                    
+                }
+            }
+            else
+            {
+                // Sino ...
+                Jugador.Nombre = nombre;
+                Equipo1.ListaJugadores.Add(Jugador);
+                Clients.Others.mostrarnuevousuario(nombre);
+            }
+
+
+            foreach (var item in Equipo1.ListaJugadores)
+            {
+                // Por cada jugador
+                Clients.All.mostrarnombre(item.Nombre);
+            }
+            foreach (var item in Equipo2.ListaJugadores)
+            {
+                // Por cada jugador
+                Clients.All.mostrarnombre(item.Nombre);
+            }
+            
 
             // Si es el ultimo jugador...
 
-            // Por cada jugador 
-            Clients.Client(jugador.IdConexion).mostrarpuntos("Ellos", puntosEquipo2);
-            Clients.Client(jugador.IdConexion).mostrarpuntos("Nosotros", puntosEquipo1);
+           
 
             //Repartir();
         }

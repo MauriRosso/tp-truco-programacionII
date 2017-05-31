@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Truco.Entidades
 {
-    class Jugador
+    public class Jugador
     {
         public string Nombre { get; set; }
         public string NombreInterno { get; set; }
