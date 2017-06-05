@@ -14,10 +14,8 @@ namespace Truco.Web.Hubs
         public static Partida juego = new Partida();
         public static Equipo Equipo1 = new Equipo();
         public static Equipo Equipo2 = new Equipo();
-
         public void AgregarJugador(string nombre)
         {
-
             Jugador Jugador = new Jugador();
 
             if (Equipo1.ListaJugadores.Count() == 2)
@@ -34,38 +32,46 @@ namespace Truco.Web.Hubs
                         Clients.All.mostrarpuntos("Ellos", 0);
                         Clients.All.mostrarpuntos("Nosotros", 0);
                     }
-                    // Sino ...
-                    Jugador.Nombre = nombre;
-                    Equipo2.ListaJugadores.Add(Jugador);
-                    Clients.Others.mostrarnuevousuario(nombre);
-
                     
+                        Jugador.Nombre = nombre;
+                        Jugador.IdConexion = Context.ConnectionId;
+                        Jugador.NombreInterno = $"user{Equipo2.ListaJugadores.Count + 3}";
+                        Jugador.Orden = juego.ID + 1;
+                        Equipo2.ListaJugadores.Add(Jugador);
+                        Clients.Others.mostrarnuevousuario(nombre);
+                    
+
+
                 }
             }
             else
             {
                 // Sino ...
                 Jugador.Nombre = nombre;
+                Jugador.IdConexion = Context.ConnectionId;
+                Jugador.NombreInterno = $"user{Equipo1.ListaJugadores.Count() + 1}";
+                Jugador.Orden = juego.ID + 1;
                 Equipo1.ListaJugadores.Add(Jugador);
                 Clients.Others.mostrarnuevousuario(nombre);
+                
             }
 
 
             foreach (var item in Equipo1.ListaJugadores)
             {
                 // Por cada jugador
-                Clients.All.mostrarnombre(item.Nombre);
+                Clients.All.mostrarNombre(item);
             }
             foreach (var item in Equipo2.ListaJugadores)
             {
                 // Por cada jugador
-                Clients.All.mostrarnombre(item.Nombre);
+                Clients.All.mostrarNombre(item);
             }
-            
+
 
             // Si es el ultimo jugador...
+            
 
-           
 
             //Repartir();
         }
@@ -74,7 +80,7 @@ namespace Truco.Web.Hubs
         //{
         //    Clients.Others.mostrarmensaje("Jugador X canto ACCION");
         //    Clients.Caller.mostrarmensaje("Yo cante ACCION");
-            
+
         //    Clients.Client(jugador.IdConexion).deshabilitarMovimientos();
 
         //    // Si el juego termino...
@@ -112,12 +118,12 @@ namespace Truco.Web.Hubs
         //            break;
         //    }
         //}
-      
+
         //public void EjecutarAccion(string accion, bool confirmacion)
         //{
         //    // confirmacion == true => Acepto la acción.
         //    Clients.All.mostrarmensaje("Jugador X acepto/rechazo la ACCION");
-            
+
         //    switch (accion)
         //    {
         //        case "Envido":

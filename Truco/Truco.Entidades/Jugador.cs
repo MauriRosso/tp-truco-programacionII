@@ -11,7 +11,7 @@ namespace Truco.Entidades
         public string Nombre { get; set; }
         public string NombreInterno { get; set; }
         public int Orden { get; set; }
-        public int IdConexion { get; set; }
+        public string IdConexion { get; set; }
 
         public int Mano { get; set; }
         public bool Turno { get; set; } //Si esta en true, le toca jugar a ese jugador.
