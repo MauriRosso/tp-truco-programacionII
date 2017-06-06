@@ -20,7 +20,8 @@
 }
 
 .centralPanel {
-    background-color:rgba(27,171,34,0.6);
+    /*background-color: rgba(27,171,34,0.6); <---- fondo verde.*/
+    background-image: url(../Images/tablegame.jpg);
     height: 300px;
 }
 
