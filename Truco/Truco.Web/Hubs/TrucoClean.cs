@@ -32,16 +32,12 @@ namespace Truco.Web.Hubs
                         Clients.All.mostrarpuntos("Ellos", 0);
                         Clients.All.mostrarpuntos("Nosotros", 0);
                     }
-                    
                         Jugador.Nombre = nombre;
                         Jugador.IdConexion = Context.ConnectionId;
                         Jugador.NombreInterno = $"user{Equipo2.ListaJugadores.Count + 3}";
                         Jugador.Orden = juego.ID + 1;
                         Equipo2.ListaJugadores.Add(Jugador);
                         Clients.Others.mostrarnuevousuario(nombre);
-                    
-
-
                 }
             }
             else
@@ -53,7 +49,6 @@ namespace Truco.Web.Hubs
                 Jugador.Orden = juego.ID + 1;
                 Equipo1.ListaJugadores.Add(Jugador);
                 Clients.Others.mostrarnuevousuario(nombre);
-                
             }
 
 

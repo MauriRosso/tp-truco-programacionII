@@ -289,11 +289,11 @@ a:focus {
 .navbar-static-top .container,
 .navbar-fixed-top .container,
 .navbar-fixed-bottom .container {
-  width: 940px;
+  width: 100%;
 }
 
 .span12 {
-  width: 940px;
+  width: 100%;
 }
 
 .span11 {

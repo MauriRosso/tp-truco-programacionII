@@ -31,10 +31,12 @@
 }
 
 .leftPanel {
-    color: white;
+    color: black;
     padding: 10px;
-    background-color:rgba(27,91,171,0.6);    
+    /*background-color:rgba(27,91,171,0.6); <--- fondo celeste.*/
+    background-image: url(../Images/notepad.jpg); /*<--- falta ver.*/
     height: 300px;
+    
     font-size: 12px !important;
 }
 

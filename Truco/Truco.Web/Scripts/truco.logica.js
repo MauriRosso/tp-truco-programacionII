@@ -208,7 +208,8 @@ $(function() {
         $("#punt").html("");
     };
 
-    trucoHub.client.mostrarCarta = function(carta, selector) {
+    trucoHub.client.mostrarCarta = function (carta, nombreInterno, cartaElegida) {
+        var selector = "#" + nombreInterno + "_card" + cartaElegida;
         $(carta.Selector).attr("src", "");
         $(selector).attr("src", carta.Imagen);
     };
