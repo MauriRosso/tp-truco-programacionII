@@ -146,10 +146,10 @@ namespace Truco.Web.Hubs
         //    }
         //}
 
-        //public void JugarCarta(string codigoCarta, string accion)
-        //{                        
-        //    Clients.All.mostrarCarta(carta, selector);
-        //}       
+        //public void JugarCarta(string codigoCarta)
+        //{
+        //    Clients.All.mostrarCarta(carta, nombreInterno, cartaElegida);
+        //}
 
         //public void Repartir()
         //{

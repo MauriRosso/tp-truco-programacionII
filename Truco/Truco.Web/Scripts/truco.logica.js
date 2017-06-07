@@ -250,7 +250,7 @@ $(function() {
             function(evt) {
                 console.log("jugar carta");
                 $(this).hide();
-                trucoHub.server.jugarCarta($(this).attr("cc"), "accion");
+                trucoHub.server.jugarCarta($(this).attr("cc"));
             });
     };
 

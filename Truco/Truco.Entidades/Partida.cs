@@ -376,7 +376,7 @@ namespace Truco.Entidades
 				}
 			}
 		}
-		private void MetodoGanadorPuntosEnvido()
+		private void MetodoEnvido()
 		{
 			int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
 			int idMayorEquipo1 = Equipo1.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo1).ID;//Saco el mayor del equipo 1
@@ -429,9 +429,147 @@ namespace Truco.Entidades
 			Acciones Acc = new Acciones();
 			if (Acc.Envido)
 			{
-				MetodoGanadorPuntosEnvido();             
+				MetodoEnvido();             
 			}
 		}
+
+        private void MetodoDobleEnvido()
+        {
+            int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
+            int idMayorEquipo1 = Equipo1.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo1).ID;//Saco el mayor del equipo 1
+
+            int mayorEquipo2 = Equipo2.ListaJugadores.Max(x2 => x2.PuntosEnvido);
+            int idMayorEquipo2 = Equipo2.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo2).ID;//Saco el mayor del equipo 2
+
+            if (mayorEquipo1 > mayorEquipo2)
+            {
+                Equipo1.Puntos += 4;
+            }
+            else if (mayorEquipo2 > mayorEquipo1)
+            {
+                Equipo2.Puntos += 4;
+            }
+            else
+            {
+                int NroMano1 = 0;
+                int NroMano2 = 0;
+                foreach (var JugE1 in Equipo1.ListaJugadores)
+                {
+                    if (JugE1.ID == idMayorEquipo1)
+                    {
+                        NroMano1 = JugE1.Mano;
+                    }
+                }
+                foreach (var JugE2 in Equipo2.ListaJugadores)
+                {
+                    if (JugE2.ID == idMayorEquipo2)
+                    {
+                        NroMano2 = JugE2.Mano;
+                    }
+                }
+
+                if (NroMano1 > NroMano2)
+                {
+                    Equipo1.Puntos += 4;
+                }
+                else
+                {
+                    Equipo2.Puntos += 4;
+                }
+            }
+        }
+
+        private void MetodoRealEnvido()
+        {
+            int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
+            int idMayorEquipo1 = Equipo1.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo1).ID;//Saco el mayor del equipo 1
+
+            int mayorEquipo2 = Equipo2.ListaJugadores.Max(x2 => x2.PuntosEnvido);
+            int idMayorEquipo2 = Equipo2.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo2).ID;//Saco el mayor del equipo 2
+
+            if (mayorEquipo1 > mayorEquipo2)
+            {
+                Equipo1.Puntos += 3;
+            }
+            else if (mayorEquipo2 > mayorEquipo1)
+            {
+                Equipo2.Puntos += 3;
+            }
+            else
+            {
+                int NroMano1 = 0;
+                int NroMano2 = 0;
+                foreach (var JugE1 in Equipo1.ListaJugadores)
+                {
+                    if (JugE1.ID == idMayorEquipo1)
+                    {
+                        NroMano1 = JugE1.Mano;
+                    }
+                }
+                foreach (var JugE2 in Equipo2.ListaJugadores)
+                {
+                    if (JugE2.ID == idMayorEquipo2)
+                    {
+                        NroMano2 = JugE2.Mano;
+                    }
+                }
+
+                if (NroMano1 > NroMano2)
+                {
+                    Equipo1.Puntos += 3;
+                }
+                else
+                {
+                    Equipo2.Puntos += 3;
+                }
+            }
+        }
+
+        private void MetodoFaltaEnvido()
+        {
+            int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
+            int idMayorEquipo1 = Equipo1.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo1).ID;//Saco el mayor del equipo 1
+
+            int mayorEquipo2 = Equipo2.ListaJugadores.Max(x2 => x2.PuntosEnvido);
+            int idMayorEquipo2 = Equipo2.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo2).ID;//Saco el mayor del equipo 2
+
+            if (mayorEquipo1 > mayorEquipo2)
+            {
+                Equipo1.Puntos += 30 - Equipo2.Puntos;
+            }
+            else if (mayorEquipo2 > mayorEquipo1)
+            {
+                Equipo2.Puntos += 30 - Equipo1.Puntos;
+            }
+            else
+            {
+                int NroMano1 = 0;
+                int NroMano2 = 0;
+                foreach (var JugE1 in Equipo1.ListaJugadores)
+                {
+                    if (JugE1.ID == idMayorEquipo1)
+                    {
+                        NroMano1 = JugE1.Mano;
+                    }
+                }
+                foreach (var JugE2 in Equipo2.ListaJugadores)
+                {
+                    if (JugE2.ID == idMayorEquipo2)
+                    {
+                        NroMano2 = JugE2.Mano;
+                    }
+                }
+
+                if (NroMano1 > NroMano2)
+                {
+                    Equipo1.Puntos += 30 - Equipo2.Puntos;
+                }
+                else
+                {
+                    Equipo2.Puntos += 30 - Equipo1.Puntos;
+                }
+            }
+        }
 
 		public void PrepararMano(int CantidadJug)
 		{
@@ -444,6 +582,10 @@ namespace Truco.Entidades
 			//Aca van todos los metodos que vayamos haciendo para jugar.
 			CrearJugadores(CantidadJugadores);
 			JugarMano(CantidadJugadores);
+            MetodoEnvido();
+            MetodoDobleEnvido();
+            MetodoRealEnvido();
+            MetodoFaltaEnvido();
 		}
 	}
 }
