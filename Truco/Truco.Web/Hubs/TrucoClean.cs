@@ -68,7 +68,55 @@ namespace Truco.Web.Hubs
             
 
 
-            //Repartir();
+            Repartir();
+        }
+        private Jugador ObtenerJugador(string idConexion)
+        {
+            Jugador JugadorObtenido = null;
+            foreach (var Jug1 in Equipo1.ListaJugadores)
+            {
+                if (idConexion == Jug1.IdConexion)
+                {
+                    JugadorObtenido = Jug1;
+                }
+            }
+            foreach (var Jug1 in Equipo2.ListaJugadores)
+            {
+                if (idConexion == Jug1.IdConexion)
+                {
+                    JugadorObtenido = Jug1;
+                }
+            }
+            return JugadorObtenido;
+        }
+
+        public void Repartir()
+        {
+            Clients.All.limpiarTablero();
+
+            Clients.Client(ObtenerJugador(Context.ConnectionId).IdConexion).mostrarCartas(ObtenerJugador(Context.ConnectionId).ListaCartas);
+
+            /*
+             * Propiedades de la Carta:
+             * Codigo
+             * Imagen
+             * Codigo                        
+             */
+
+            //Clients.Client(jugador.IdConexion).habilitarMovimientos();
+            //Clients.Client(...).hideEnvidoEnvidoBotton();
+            //Clients.Client(...).hideVale4Botton();
+            //Clients.Client(...).hideReTrucoBotton();
+            //Clients.Client(...).showEnvidoBotton();
+            //Clients.Client(...).showTrucoBotton();
+            //Clients.Client(...).showRealEnvidoBotton();
+            //Clients.Client(...).showFaltaEnvidoBotton();
+
+            //Clients.Client(...).desabilitarMovimientos();
+            //Clients.Client(...).hideEnvidoOptions();
+            //Clients.Client(...).hideTrucoBotton();
+            //Clients.Client(...).hideReTrucoBotton();
+            //Clients.Client(...).hideVale4Botton();              
         }
 
         //public void cantar(string accion) 
@@ -150,34 +198,5 @@ namespace Truco.Web.Hubs
         //{                        
         //    Clients.All.mostrarCarta(carta, selector);
         //}       
-
-        //public void Repartir()
-        //{
-        //    Clients.All.limpiarTablero();
-
-        //    Clients.Client(jugador.IdConexion).mostrarCartas(carta);
-
-        //    /*
-        //     * Propiedades de la Carta:
-        //     * Codigo
-        //     * Imagen
-        //     * Codigo                        
-        //     */
-
-        //    //Clients.Client(jugador.IdConexion).habilitarMovimientos();
-        //    //Clients.Client(...).hideEnvidoEnvidoBotton();
-        //    //Clients.Client(...).hideVale4Botton();
-        //    //Clients.Client(...).hideReTrucoBotton();
-        //    //Clients.Client(...).showEnvidoBotton();
-        //    //Clients.Client(...).showTrucoBotton();
-        //    //Clients.Client(...).showRealEnvidoBotton();
-        //    //Clients.Client(...).showFaltaEnvidoBotton();
-
-        //    //Clients.Client(...).desabilitarMovimientos();
-        //    //Clients.Client(...).hideEnvidoOptions();
-        //    //Clients.Client(...).hideTrucoBotton();
-        //    //Clients.Client(...).hideReTrucoBotton();
-        //    //Clients.Client(...).hideVale4Botton();              
-        //}
     }
 }
