@@ -230,6 +230,7 @@
     <Content Include="Images\o6.jpg" />
     <Content Include="Images\o7.jpg" />
     <Content Include="Images\tablegame.jpg" />
+    <Content Include="Images\verde.jpeg" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
