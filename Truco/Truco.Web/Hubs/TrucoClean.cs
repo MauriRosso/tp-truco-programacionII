@@ -12,32 +12,34 @@ namespace Truco.Web.Hubs
     public class Truco : Hub
     {
         public static Partida juego = new Partida();
-        public static Equipo Equipo1 = new Equipo();
-        public static Equipo Equipo2 = new Equipo();
+        
         public void AgregarJugador(string nombre)
         {
             Jugador Jugador = new Jugador();
 
-            if (Equipo1.ListaJugadores.Count() == 2)
+            if (juego.Equipo1.ListaJugadores.Count() == 2)
             {
-                if (Equipo2.ListaJugadores.Count() == 2)
+                if (juego.Equipo2.ListaJugadores.Count() == 2)
                 {
                     // Si el juego esta completo...
                     Clients.Caller.mostrarmensaje("El juego ya está completo!");
                 }
                 else
                 {
-                    if (Equipo2.ListaJugadores.Count() == 1)
+
+                    Jugador.Nombre = nombre;
+                    Jugador.IdConexion = Context.ConnectionId;
+                    Jugador.NombreInterno = $"user{juego.Equipo2.ListaJugadores.Count + 3}";
+                    Jugador.Orden = juego.ID + 1;
+                    juego.Equipo2.ListaJugadores.Add(Jugador);
+                    Clients.Others.mostrarnuevousuario(nombre);
+
+                    if (juego.Equipo2.ListaJugadores.Count() == 2)
                     {
                         Clients.All.mostrarpuntos("Ellos", 0);
                         Clients.All.mostrarpuntos("Nosotros", 0);
+                        Repartir();
                     }
-                        Jugador.Nombre = nombre;
-                        Jugador.IdConexion = Context.ConnectionId;
-                        Jugador.NombreInterno = $"user{Equipo2.ListaJugadores.Count + 3}";
-                        Jugador.Orden = juego.ID + 1;
-                        Equipo2.ListaJugadores.Add(Jugador);
-                        Clients.Others.mostrarnuevousuario(nombre);
                 }
             }
             else
@@ -45,19 +47,19 @@ namespace Truco.Web.Hubs
                 // Sino ...
                 Jugador.Nombre = nombre;
                 Jugador.IdConexion = Context.ConnectionId;
-                Jugador.NombreInterno = $"user{Equipo1.ListaJugadores.Count() + 1}";
+                Jugador.NombreInterno = $"user{juego.Equipo1.ListaJugadores.Count() + 1}";
                 Jugador.Orden = juego.ID + 1;
-                Equipo1.ListaJugadores.Add(Jugador);
+                juego.Equipo1.ListaJugadores.Add(Jugador);
                 Clients.Others.mostrarnuevousuario(nombre);
             }
 
 
-            foreach (var item in Equipo1.ListaJugadores)
+            foreach (var item in juego.Equipo1.ListaJugadores)
             {
                 // Por cada jugador
                 Clients.All.mostrarNombre(item);
             }
-            foreach (var item in Equipo2.ListaJugadores)
+            foreach (var item in juego.Equipo2.ListaJugadores)
             {
                 // Por cada jugador
                 Clients.All.mostrarNombre(item);
@@ -65,22 +67,22 @@ namespace Truco.Web.Hubs
 
 
             // Si es el ultimo jugador...
-            
 
 
-            Repartir();
+
+
         }
         private Jugador ObtenerJugador(string idConexion)
         {
             Jugador JugadorObtenido = null;
-            foreach (var Jug1 in Equipo1.ListaJugadores)
+            foreach (var Jug1 in juego.Equipo1.ListaJugadores)
             {
                 if (idConexion == Jug1.IdConexion)
                 {
                     JugadorObtenido = Jug1;
                 }
             }
-            foreach (var Jug1 in Equipo2.ListaJugadores)
+            foreach (var Jug1 in juego.Equipo2.ListaJugadores)
             {
                 if (idConexion == Jug1.IdConexion)
                 {
@@ -93,15 +95,24 @@ namespace Truco.Web.Hubs
         public void Repartir()
         {
             Clients.All.limpiarTablero();
+            juego.PrepararMano(4);
+            foreach (var item in juego.Equipo1.ListaJugadores)
+            {
+                Clients.Client(item.IdConexion).mostrarCartas(item.ListaCartas);
+            }
 
-            Clients.Client(ObtenerJugador(Context.ConnectionId).IdConexion).mostrarCartas(ObtenerJugador(Context.ConnectionId).ListaCartas);
+            foreach (var item in juego.Equipo2.ListaJugadores)
+            {
+                Clients.Client(item.IdConexion).mostrarCartas(item.ListaCartas);
+            }
 
             /*
              * Propiedades de la Carta:
              * Codigo
-             * Imagen
-             * Codigo                        
+             * Imagen                             
              */
+
+
 
             //Clients.Client(jugador.IdConexion).habilitarMovimientos();
             //Clients.Client(...).hideEnvidoEnvidoBotton();

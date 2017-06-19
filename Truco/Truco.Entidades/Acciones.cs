@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Truco.Entidades
 {
-    class Acciones
+    public class Acciones
     {
         public bool Quiero { get; set; }
         public bool NoQuiero { get; set; }
@@ -21,5 +21,6 @@ namespace Truco.Entidades
         public bool ContraFlor { get; set; }
         public bool MostrarCartas { get; set; } //Muestra las cartas al final de la partida
 
+        
     }
 }

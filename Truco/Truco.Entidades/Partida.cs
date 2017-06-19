@@ -13,44 +13,44 @@ namespace Truco.Entidades
 		public string Nombre { get; set; }
 		public int NumeroRonda { get; set; }
 
-		Equipo Equipo1 = new Equipo();
-		Equipo Equipo2 = new Equipo();
+        public Equipo Equipo1 = new Equipo();
+        public Equipo Equipo2 = new Equipo();
 
-		public void CrearJugadores(int CantJug)
-		{
-			for (int i = 0; i < CantJug; i++)
-			{
-				Jugador Jdr = new Jugador ();
+        //public void CrearJugadores(int CantJug)
+        //{
+        //	for (int i = 0; i < CantJug; i++)
+        //	{
+        //		Jugador Jdr = new Jugador ();
 
-				if (i == 0)
-				{
-					Jdr.Nombre = "Pedro";
-					Equipo1.ListaJugadores.Add(Jdr);
-				}
-				else
-				{
-					if (i == 1)
-					{
-						Jdr.Nombre = "Pablo";
-						Equipo1.ListaJugadores.Add(Jdr);
-					}
-					else
-					{
-						if (i == 2)
-						{
-							Jdr.Nombre = "Juan";
-							Equipo2.ListaJugadores.Add(Jdr);
-						}
-						else
-						{
-							Jdr.Nombre = "Jose";
-							Equipo2.ListaJugadores.Add(Jdr);
-						}
-					}
-				}
-			}
-		}
-		public void RepartirCartas(int CantidadJug)
+        //		if (i == 0)
+        //		{
+        //			Jdr.Nombre = "Pedro";
+        //			Equipo1.ListaJugadores.Add(Jdr);
+        //		}
+        //		else
+        //		{
+        //			if (i == 1)
+        //			{
+        //				Jdr.Nombre = "Pablo";
+        //				Equipo1.ListaJugadores.Add(Jdr);
+        //			}
+        //			else
+        //			{
+        //				if (i == 2)
+        //				{
+        //					Jdr.Nombre = "Juan";
+        //					Equipo2.ListaJugadores.Add(Jdr);
+        //				}
+        //				else
+        //				{
+        //					Jdr.Nombre = "Jose";
+        //					Equipo2.ListaJugadores.Add(Jdr);
+        //				}
+        //			}
+        //		}
+        //	}
+        //}
+        public void RepartirCartas(int CantidadJug)
 		{
 			Mazo MezclaMazo = new Mazo();
 			MezclaMazo.MezclarCartas();
@@ -580,7 +580,6 @@ namespace Truco.Entidades
 		public void MetodoJugarGeneral(int CantidadJugadores)
 		{
 			//Aca van todos los metodos que vayamos haciendo para jugar.
-			CrearJugadores(CantidadJugadores);
 			JugarMano(CantidadJugadores);
             MetodoEnvido();
             MetodoDobleEnvido();
