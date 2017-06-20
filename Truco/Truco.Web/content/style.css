@@ -42,10 +42,10 @@
     padding: 10px;
     text-align:center;
     /*background-color:rgba(27,91,171,0.6); <--- fondo celeste.*/
-    background-image: url(../Images/notepad.jpg); /*<--- falta ver.*/
+    background-image: url("/Images/notepad.png"); /*<--- falta ver.*/
     height: 300px;
-    font-size: 15px !important;
-    font-family: 'Comic Sans MS';
+    font-size: 20px !important;
+    font-family: 'Pangolin';
 }
 
 .rightPanel {
