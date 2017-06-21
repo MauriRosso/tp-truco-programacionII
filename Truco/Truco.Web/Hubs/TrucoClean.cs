@@ -12,7 +12,7 @@ namespace Truco.Web.Hubs
     public class Truco : Hub
     {
         public static Partida juego = new Partida();
-        
+
         public void AgregarJugador(string nombre)
         {
             Jugador Jugador = new Jugador();
@@ -106,7 +106,7 @@ namespace Truco.Web.Hubs
                 Clients.Client(item.IdConexion).mostrarCartas(item.ListaCartas);
             }
 
-            Clients.Client(Context.ConnectionId).habilitarMovimientos();
+            Clients.Client(juego.Equipo1.ListaJugadores[0].IdConexion).habilitarMovimientos();
             //Clients.Client(...).hideEnvidoEnvidoBotton();
             //Clients.Client(...).hideVale4Botton();
             //Clients.Client(...).hideReTrucoBotton();
@@ -203,9 +203,18 @@ namespace Truco.Web.Hubs
             // 2- Habilitar los movimientos del siguiente jugador y deshabilitar el actual.
             // 3- Habilitar acciones correspondientes.
 
-            var j = ObtenerJugador(Context.ConnectionId);
-            var c = j.ListaCartas.Where(x => x.Codigo == codigoCarta).Single();
-            Clients.All.mostrarCarta(c, j.NombreInterno, "1");
+            var jugador = ObtenerJugador(Context.ConnectionId);
+            var carta = jugador.ListaCartas.Where(x => x.Codigo == codigoCarta).Single();
+
+            foreach (var jugadorSel in juego.Equipo1.ListaJugadores)
+            {
+                var mayorTurno = juego.Equipo1.ListaJugadores.Where(x => x.Turno).Max(x => x.Mano);
+                var jugadorConTurno = juego.Equipo1.ListaJugadores.Where(x => x.Mano == mayorTurno).Single();
+            }
+
+            juego.NumeroMano = juego.NumeroMano;
+            juego.NumeroMano++;
+            Clients.All.mostrarCarta(carta, jugador.NombreInterno, juego.NumeroMano);
         }
     }
 }

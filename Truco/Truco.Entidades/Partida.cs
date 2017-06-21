@@ -11,7 +11,10 @@ namespace Truco.Entidades
 		public int ID { get; set; }
 		public int CantidadJugadores { get; set; }
 		public string Nombre { get; set; }
-		public int NumeroRonda { get; set; }
+		public int NumeroRonda { get; set; } // Numero de rondas que se jugaron en la partida
+        public int NumeroMano { get; set; }// Numero x de las 3 manos
+        
+              
 
         public Equipo Equipo1 = new Equipo();
         public Equipo Equipo2 = new Equipo();
