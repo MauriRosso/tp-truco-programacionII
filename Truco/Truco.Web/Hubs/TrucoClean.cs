@@ -106,15 +106,7 @@ namespace Truco.Web.Hubs
                 Clients.Client(item.IdConexion).mostrarCartas(item.ListaCartas);
             }
 
-            /*
-             * Propiedades de la Carta:
-             * Codigo
-             * Imagen                             
-             */
-
-
-
-            //Clients.Client(jugador.IdConexion).habilitarMovimientos();
+            Clients.Client(Context.ConnectionId).habilitarMovimientos();
             //Clients.Client(...).hideEnvidoEnvidoBotton();
             //Clients.Client(...).hideVale4Botton();
             //Clients.Client(...).hideReTrucoBotton();
@@ -205,9 +197,15 @@ namespace Truco.Web.Hubs
         //    }
         //}
 
-        //public void JugarCarta(string codigoCarta)
-        //{
-        //    Clients.All.mostrarCarta(carta, nombreInterno, cartaElegida);
-        //}
+        public void JugarCarta(string codigoCarta)
+        {
+            // 1- Ejecutar el codigo seteando el numero de mano/ronda correspondiente.
+            // 2- Habilitar los movimientos del siguiente jugador y deshabilitar el actual.
+            // 3- Habilitar acciones correspondientes.
+
+            var j = ObtenerJugador(Context.ConnectionId);
+            var c = j.ListaCartas.Where(x => x.Codigo == codigoCarta).Single();
+            Clients.All.mostrarCarta(c, j.NombreInterno, "1");
+        }
     }
 }
