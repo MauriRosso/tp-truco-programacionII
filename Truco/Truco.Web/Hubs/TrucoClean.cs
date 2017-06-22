@@ -217,7 +217,8 @@ namespace Truco.Web.Hubs
 
             var mayorTurno = 0;
             var idMay = "asd";
-            Jugador ProximoJugador;
+            Jugador ProximoJugador = null;
+            CartasMesa CartaTirada = new CartasMesa();
             foreach (var item in juego.Equipo1.ListaJugadores)
             {
                 if (item.Turno)
@@ -226,6 +227,9 @@ namespace Truco.Web.Hubs
                     {
                         mayorTurno = item.Mano;
                         idMay = item.IdConexion;
+                        CartaTirada.Equipo = "Equipo1";
+                        CartaTirada.IdJugador = item.IdConexion;
+                        CartaTirada.Mano = juego.NumeroMano;
                     }
                 }
             }
@@ -237,6 +241,9 @@ namespace Truco.Web.Hubs
                     {
                         mayorTurno = item.Mano;
                         idMay = item.IdConexion;
+                        CartaTirada.Equipo = "Equipo2";
+                        CartaTirada.IdJugador = item.IdConexion;
+                        CartaTirada.Mano = juego.NumeroMano;
                     }
                 }
             }
@@ -261,10 +268,13 @@ namespace Truco.Web.Hubs
             {
                 juego.NumeroMano = 1;
             }
+           
+            CartaTirada.Carta = carta;
+            juego.ListaCartasJugadas.Add(CartaTirada);//Se cargan las cartas que se van jugando en una lista
             Clients.All.mostrarCarta(carta, jugador.NombreInterno, juego.NumeroMano);
             Clients.Client(jugador.IdConexion).deshabilitarMovimientos(); //deshabilito el movimiento al jdr que acaba de tirar
 
-            if (juego.CartasJugadas == 4)
+            if (juego.CartasJugadas == 4) //quiere decir que se termino una mano.
             {
                 juego.NumeroMano = juego.NumeroMano;
                 juego.NumeroMano++;
@@ -273,6 +283,46 @@ namespace Truco.Web.Hubs
                 juego.Equipo1.ListaJugadores[1].Turno = true;
                 juego.Equipo2.ListaJugadores[0].Turno = true;
                 juego.Equipo2.ListaJugadores[1].Turno = true;
+
+                Cartas mayCarta = null;
+                string idJugadorMayorCarta = "";
+                bool BanderaPrimerCarta = false;
+                foreach (var item in juego.ListaCartasJugadas) //Se saca la mayor carta de la mano.
+                {
+                    if (item.Mano == juego.NumeroMano - 1) //encontre las cartas que se jugaron en la mano que se jugo recien
+                    {
+                        if (BanderaPrimerCarta == false) //si es la primer carta de la mano que voy a comparar
+                        {
+                            BanderaPrimerCarta = true;
+                            mayCarta = item.Carta;
+                            idJugadorMayorCarta = item.IdJugador;
+                        }
+                        else
+                        {
+                            if (item.Carta.Valor > mayCarta.Valor)
+                            {
+                                mayCarta = item.Carta;
+                                idJugadorMayorCarta = item.IdJugador;
+                            }
+                        }
+                    }
+                }
+                foreach (var item in juego.Equipo1.ListaJugadores)
+                {
+                    if (item.IdConexion == idJugadorMayorCarta)
+                    {
+                        ProximoJugador = item;
+                    }
+                }
+                foreach (var item in juego.Equipo2.ListaJugadores)
+                {
+                    if (item.IdConexion == idJugadorMayorCarta)
+                    {
+                        ProximoJugador = item;
+                    }
+                }
+                Clients.Client(ProximoJugador.IdConexion).habilitarMovimientos(); //habilito movimiento al jugador que tuvo la carta mas alta de la mano.
+
             }
             /////////////////////////////////////////////////////////////////////////////////////////
             //LOS JUGADORES ESTAN MAL SENTADOS, CORREGIR!!! (deben sentarse uno enfrentado al otro)//
@@ -286,7 +336,6 @@ namespace Truco.Web.Hubs
                     if (item.Mano == mayorTurno - 1)
                     {
                         ProximoJugador = item;
-                        Clients.Client(ProximoJugador.IdConexion).habilitarMovimientos();
                     }
                 }
                 foreach (var item in juego.Equipo2.ListaJugadores)
@@ -294,11 +343,10 @@ namespace Truco.Web.Hubs
                     if (item.Mano == mayorTurno - 1)
                     {
                         ProximoJugador = item;
-                        Clients.Client(ProximoJugador.IdConexion).habilitarMovimientos();
                     }
                 }
+                Clients.Client(ProximoJugador.IdConexion).habilitarMovimientos();
             }
-
             // NOTA: Una vez que todos jugaron su primera carta, tengo que ver a quien volver a habilitar su movimiento para que siga con la mano 2 (depende quien gano la primera)
         }
     }

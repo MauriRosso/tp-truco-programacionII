@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Acciones.cs" />
     <Compile Include="Cartas.cs" />
+    <Compile Include="CartasMesa.cs" />
     <Compile Include="Equipo.cs" />
     <Compile Include="Jugar.cs" />
     <Compile Include="Mazo.cs" />

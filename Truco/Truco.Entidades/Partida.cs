@@ -16,7 +16,7 @@ namespace Truco.Entidades
         public int CartasJugadas { get; set; } // Numero de cartas jugadas en la mano
 
 
-
+        public List<CartasMesa> ListaCartasJugadas = new List<CartasMesa>();
         public Equipo Equipo1 = new Equipo();
         public Equipo Equipo2 = new Equipo();
 
