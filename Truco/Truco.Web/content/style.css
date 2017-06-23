@@ -43,6 +43,8 @@
     text-align:center;
     /*background-color:rgba(27,91,171,0.6); <--- fondo celeste.*/
     background-image: url("/Images/notepad.png"); /*<--- falta ver.*/
+    background-size:contain;
+    background-repeat:no-repeat;
     height: 300px;
     font-size: 20px !important;
     font-family: 'Pangolin';

@@ -17,24 +17,37 @@ namespace Truco.Web.Hubs
         {
             Jugador Jugador = new Jugador();
 
-            if (juego.Equipo1.ListaJugadores.Count() == 2)
+            if (juego.ListaJugadores.Count() >= 2)
             {
-                if (juego.Equipo2.ListaJugadores.Count() == 2)
+                if (juego.ListaJugadores.Count() == 4)
                 {
                     // Si el juego esta completo...
                     Clients.Caller.mostrarmensaje("El juego ya está completo!");
                 }
                 else
                 {
-
-                    Jugador.Nombre = nombre;
-                    Jugador.IdConexion = Context.ConnectionId;
-                    Jugador.NombreInterno = $"user{juego.Equipo2.ListaJugadores.Count + 3}";
-                    Jugador.Orden = juego.ID + 1;
-                    Jugador.Turno = true;
-                    juego.Equipo2.ListaJugadores.Add(Jugador);
-                    Clients.Others.mostrarnuevousuario(nombre);
-
+                    if (juego.ListaJugadores.Count() == 3)
+                    {
+                        Jugador.Nombre = nombre;
+                        Jugador.IdConexion = Context.ConnectionId;
+                        Jugador.NombreInterno = $"user{juego.Equipo2.ListaJugadores.Count + 3}";
+                        Jugador.Orden = juego.ID + 1;
+                        Jugador.Turno = true;
+                        juego.Equipo2.ListaJugadores.Add(Jugador);
+                        juego.ListaJugadores.Add(Jugador);
+                        //Clients.Others.mostrarnuevousuario(nombre);
+                    }
+                    else
+                    {
+                        Jugador.Nombre = nombre;
+                        Jugador.IdConexion = Context.ConnectionId;
+                        Jugador.NombreInterno = $"user{juego.Equipo1.ListaJugadores.Count + 2}";
+                        Jugador.Orden = juego.ID + 1;
+                        Jugador.Turno = true;
+                        juego.Equipo1.ListaJugadores.Add(Jugador);
+                        juego.ListaJugadores.Add(Jugador);
+                        //Clients.Others.mostrarnuevousuario(nombre);
+                    }
                     if (juego.Equipo2.ListaJugadores.Count() == 2)
                     {
                         Clients.All.mostrarpuntos("Ellos", 0);
@@ -46,27 +59,35 @@ namespace Truco.Web.Hubs
             else
             {
                 // Sino ...
-                Jugador.Nombre = nombre;
-                Jugador.IdConexion = Context.ConnectionId;
-                Jugador.NombreInterno = $"user{juego.Equipo1.ListaJugadores.Count() + 1}";
-                Jugador.Orden = juego.ID + 1;
-                Jugador.Turno = true;
-                juego.Equipo1.ListaJugadores.Add(Jugador);
-                Clients.Others.mostrarnuevousuario(nombre);
+                if (juego.ListaJugadores.Count() == 1)
+                {
+                    Jugador.Nombre = nombre;
+                    Jugador.IdConexion = Context.ConnectionId;
+                    Jugador.NombreInterno = $"user{juego.Equipo2.ListaJugadores.Count() + 2}";
+                    Jugador.Orden = juego.ID + 1;
+                    Jugador.Turno = true;
+                    juego.Equipo2.ListaJugadores.Add(Jugador);
+                    juego.ListaJugadores.Add(Jugador);
+                    //Clients.Others.mostrarnuevousuario(nombre);
+                }
+                else
+                {
+                    Jugador.Nombre = nombre;
+                    Jugador.IdConexion = Context.ConnectionId;
+                    Jugador.NombreInterno = $"user{juego.Equipo1.ListaJugadores.Count() + 1}";
+                    Jugador.Orden = juego.ID + 1;
+                    Jugador.Turno = true;
+                    juego.Equipo1.ListaJugadores.Add(Jugador);
+                    juego.ListaJugadores.Add(Jugador);
+                    //Clients.Others.mostrarnuevousuario(nombre);
+                }
             }
 
-
-            foreach (var item in juego.Equipo1.ListaJugadores)
+            foreach (var item in juego.ListaJugadores)
             {
                 // Por cada jugador
                 Clients.All.mostrarNombre(item);
             }
-            foreach (var item in juego.Equipo2.ListaJugadores)
-            {
-                // Por cada jugador
-                Clients.All.mostrarNombre(item);
-            }
-
 
             // Si es el ultimo jugador...
 
