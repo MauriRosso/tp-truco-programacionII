@@ -83,10 +83,13 @@ namespace Truco.Web.Hubs
                 }
             }
 
-            foreach (var item in juego.ListaJugadores)
+            if (juego.ListaJugadores.Count() == 4)
             {
-                // Por cada jugador
-                Clients.All.mostrarNombre(item);
+                foreach (var item in juego.ListaJugadores)
+                {
+                    // Por cada jugador
+                    Clients.All.mostrarNombre(item);
+                }
             }
 
             // Si es el ultimo jugador...
@@ -220,8 +223,9 @@ namespace Truco.Web.Hubs
         //    }
         //}
 
-        public void JugarCarta(string codigoCarta)
+        public void JugarCartaa(string codigoCarta)
         {
+            //Clients.Client(jugador.IdConexion).deshabilitarMovimientos();
             // 1- Ejecutar el codigo seteando el numero de mano/ronda correspondiente.
             // 2- Habilitar los movimientos del siguiente jugador y deshabilitar el actual.
             // 3- Habilitar acciones correspondientes.
@@ -369,6 +373,41 @@ namespace Truco.Web.Hubs
                 Clients.Client(ProximoJugador.IdConexion).habilitarMovimientos();
             }
             // NOTA: Una vez que todos jugaron su primera carta, tengo que ver a quien volver a habilitar su movimiento para que siga con la mano 2 (depende quien gano la primera)
+        } //MAURI, TRATE DE SEGUIR TU METODO PERO NO PUDE ENTENDER BIEN COMO HACER QUE SIGA FUNCIONANDO Y ESTOY TRATANDO DE HACER OTRO. TE AVISO DE ESTO PORQUE LE CAMBIE EL NOMBRE A TU METODO
+        //ASI ARRANCABA EL MIO PARA PODER PROBARLO
+
+        public void JugarCarta(string codigoCarta)
+        {
+            var turnoF = 0; // CANTIDAD DE JUGADORES CON TURNOS EN FALSE
+            var nroRonda = juego.NumeroRonda;
+            var nroMano = juego.NumeroMano;
+            var jugador = ObtenerJugador(Context.ConnectionId);
+            var carta = jugador.ListaCartas.Where(x => x.Codigo == codigoCarta).Single();
+            //Jugador ProximoJugador = null;
+            CartasMesa CartaTirada = new CartasMesa();
+
+            if (turnoF != 4) //SI EL CONTADOR turnoF ES DISTINTO DE 4
+            {
+                if ((nroRonda == 0) && (nroMano == 0)) //SI LA RONDA ES LA PRIMERA Y LA MANO ES LA PRIMERA
+                {
+                    foreach (var jugadorSeleccionado in juego.ListaJugadores) //BUSCO EN LA LISTA QUE CREE DONDE ESTAN TODOS LOS JUGADORES SIN IMPORTAR SU EQUIPO
+                    {
+                        if (jugadorSeleccionado.IdConexion == Context.ConnectionId) //VEO SI EL JUGADOR QUE TIENE EL CONTEXT ES EL MISMO QUE ESTA SELECCIONADO EN LA LISTA EN ESE MOMENTO
+                        {
+                            Clients.Client(jugadorSeleccionado.IdConexion).habilitarMovimientos(); //LE HABILITO EL MOVIMIENTO
+                            Clients.All.mostrarCarta(carta, jugadorSeleccionado.NombreInterno, juego.NumeroMano); //HAGO QUE JUEGUE LA CARTA
+                            Clients.Client(jugadorSeleccionado.IdConexion).deshabilitarMovimientos(); //LE DESHABILITO EL MOVIMIENTO
+                            turnoF++; //SUMO 1 A TURNOF
+                            jugadorSeleccionado.Turno = false; // LE PONGO EN FALSE LA PROPIEDAD TURNO
+                        }                        
+                    }//ESTO SE DEBERIA REPETIR CON LOS 4 JUGADORES ANTES DE SALIR DEL FOREACH
+                    turnoF = 0; //CUANDO SALE DEL FOREACH LE PONGO EN 0 LA PROPIEDAD TURNOF ASI EN EL SIGUENTE IF PUEDO SEGURI HACIENDO COTRAS COSAS
+                    foreach (var jugadores in juego.ListaJugadores)//Y TAMBIEN LE PONGO EN TRUE DE VUELTA EL TURNO A TODOS LOS JUGADORES YA QUE JUGARON LA MANO
+                    {
+                        jugadores.Turno = true;
+                    }
+                }
+            }
         }
     }
 }
