@@ -131,10 +131,14 @@ namespace Truco.Web.Hubs
                 }
             }
             return ProximoJugador;
-        }
+        } //Metodo para buscar el proximo jugador de una lista, te lo saque del metodo JugarCartas, creo que funciona no lo lleuge a probar
 
         public void cantar(string accion)
         {
+            //MAURI LEE ESTO PRIMERO: Te digo mas o menos lo que tengo pensado hacer:
+            //Funciona asi el metodo cantar y EjecutarAccion, fijate que el metodo cantar tiene un parametro accion y el metodo EjecutarAccion tiene 2 parametros accion y confirmacion, lo que tenemos que hacer es en el metodo
+            //cantar dar los permisos a los jugadores para que canten lo que tienen que cantar y tambien aca adentro se llamaria al metodo EjecutarAccion, invocandolo dentro de la accion del switch, por lo que sabriamos cual es la 
+            //accion que esta ejecutando y guardando en la variable confirmacion que cree si quiere o no esa accion.
             var jugador = ObtenerJugador(Context.ConnectionId);
 
             foreach (var jugadorSeleccionado in juego.ListaJugadores) //busco el jugador que canta en la lista de jugadores
