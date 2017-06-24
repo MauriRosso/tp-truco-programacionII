@@ -95,17 +95,14 @@ namespace Truco.Web.Hubs
 
             Clients.Client(juego.ListaJugadores[0].IdConexion).habilitarMovimientos(); //Habilito el mov. del primer jugador para comenzar a jugar
 
-            //foreach (var item in juego.ListaJugadores)
-            //{
-            //    Clients.Client(item.IdConexion).showEnvidoBotton();
-            //    Clients.Client(item.IdConexion).showTrucoBotton();
-            //    Clients.Client(item.IdConexion).showRealEnvidoBotton();
-            //    Clients.Client(item.IdConexion).showFaltaEnvidoBotton();
-            //}
+            foreach (var item in juego.ListaJugadores)
+            {                       
+                Clients.Client(item.IdConexion).hideTrucoBotton();
+                Clients.Client(item.IdConexion).hideReTrucoBotton();
+                Clients.Client(item.IdConexion).hideVale4Botton();
 
-            //Clients.Client(item.IdConexion).hideEnvidoEnvidoBotton();
-            //Clients.Client(item.IdConexion).hideVale4Botton();
-            //Clients.Client(item.IdConexion).hideReTrucoBotton();
+                Clients.Client(item.IdConexion).hideEnvidoOptions();
+            }
 
             //Clients.Client(item.IdConexion).hideEnvidoOptions();
             //Clients.Client(item.IdConexion).hideTrucoBotton();
@@ -115,48 +112,85 @@ namespace Truco.Web.Hubs
             //Clients.Client(...).desabilitarMovimientos();
         }
 
-        //public void cantar(string accion) 
-        //{
-        //    Clients.Others.mostrarmensaje("Jugador X canto ACCION");
-        //    Clients.Caller.mostrarmensaje("Yo cante ACCION");
+        public void cantar(string accion)
+        {
+            var jugador = ObtenerJugador(Context.ConnectionId);
 
-        //    Clients.Client(jugador.IdConexion).deshabilitarMovimientos();
+            Clients.Others.mostrarmensaje("{0}, canto {1}", jugador.Nombre, accion);
+            Clients.Caller.mostrarmensaje("Yo cante {0}", accion);
+            Clients.Client(jugador.IdConexion).deshabilitarMovimientos();
 
-        //    // Si el juego termino...
-        //    Clients.Client(jugador.IdConexion).mostrarMensajeFinal(true); // GANADOR
-        //    Clients.Client(jugador.IdConexion).mostrarMensajeFinal(false); // PERDEDOR
-        //    Clients.All.deshabilitarMovimientos();
+            // Si el juego termino...
+            Clients.Client(jugador.IdConexion).mostrarMensajeFinal(true); // GANADOR
+            Clients.Client(jugador.IdConexion).mostrarMensajeFinal(false); // PERDEDOR
+            Clients.All.deshabilitarMovimientos();
 
-        //    // Sino
-        //    Clients.All.limpiarpuntos();
+            // Sino
+            Clients.All.limpiarpuntos();
 
-        //    // Y mostrar puntos y repartir.
+            // Y mostrar puntos y repartir.
 
 
-        //    switch (accion) 
-        //    {   
-        //        case "me voy al mazo":            
-        //            break;
-        //        case "envido":
-        //            Clients.All.hidemazo();
-        //            break;
-        //        case "envidoenvido":
-        //            Clients.All.hidemazo();
-        //            break;
-        //        case "faltaenvido":
-        //            Clients.All.hidemazo();
-        //            break;
-        //        case "realenvido":
-        //            Clients.All.hidemazo();
-        //            break;
-        //        case "truco":
-        //            break;
-        //        case "retruco":
-        //            break;
-        //        case "vale4":
-        //            break;
-        //    }
-        //}
+            switch (accion)
+            {
+                case "me voy al mazo":
+                    break;
+                case "envido":
+                    Clients.Caller.hideEnvidoOptions();                   
+                    Clients.Others.showEnvidoOptions();
+
+                    Clients.All.hideTrucoBotton();
+                    Clients.All.hideReTrucoBotton();
+                    Clients.All.hideVale4Botton();
+                    Clients.All.hidemazo();
+                    break;
+                case "envidoenvido":
+                    Clients.All.hidemazo();
+                    Clients.All.hideTrucoBotton();
+                    Clients.All.hideReTrucoBotton();
+                    Clients.All.hideVale4Botton();
+
+                    Clients.All.hideEnvidoEnvidoBotton();
+                    Clients.All.hideEnvidoBotton();
+                    Clients.Others.showRealEnvidoBotton();
+                    Clients.Others.showFaltaEnvidoBotton();
+                    Clients.Caller.hideEnvidoOptions();
+                    break;
+                case "faltaenvido":
+                    Clients.All.hidemazo();
+                    Clients.All.hideTrucoBotton();
+                    Clients.All.hideReTrucoBotton();
+                    Clients.All.hideVale4Botton();
+
+                    Clients.All.hideEnvidoOptions();
+                    break;
+                case "realenvido":
+                    Clients.All.hidemazo();
+                    Clients.All.hideTrucoBotton();
+                    Clients.All.hideReTrucoBotton();
+                    Clients.All.hideVale4Botton();
+
+                    Clients.All.hideEnvidoOptions();
+                    Clients.Others.showFaltaEnvidoBotton();
+                    break;
+                case "truco":
+                    Clients.All.hideEnvidoOptions();
+
+                    Clients.All.showmazo();
+                    Clients.Others.showTrucoBotton();
+                    break;
+                case "retruco":
+                    Clients.All.showmazo();
+                    Clients.Others.showVale4Botton();
+                    break;
+                case "vale4":
+                    Clients.All.showmazo();
+                    Clients.All.hideTrucoBotton();
+                    Clients.All.hideReTrucoBotton();
+                    Clients.All.hideVale4Botton();
+                    break;
+            }
+        }
 
         //public void EjecutarAccion(string accion, bool confirmacion)
         //{
@@ -166,7 +200,7 @@ namespace Truco.Web.Hubs
         //    switch (accion)
         //    {
         //        case "Envido":
-        //            Clients.All.showmazo();            
+        //            Clients.All.showmazo();
         //            Clients.Client(jugador.IdConexion).habilitarMovimientos();
         //            break;
         //        case "EnvidoEnvido":
@@ -269,7 +303,7 @@ namespace Truco.Web.Hubs
                                 }
                             }
                         }
-                    }
+                    }                   
                 }
                 foreach (var item in juego.ListaJugadores)
                 {
@@ -305,58 +339,5 @@ namespace Truco.Web.Hubs
                 Clients.Client(ProximoJugador.IdConexion).habilitarMovimientos();
             }             
         }  
-
-        //public void JugarCarta(string codigoCarta)
-        //{
-
-        //    //LA LOGICA ES DESHABILITAR EL MOVIMIENTO DEL JUG. ACTUAL Y HABILITAR EL MOV. DEL PROXIMO JUGADOR.
-
-        //    int turnoF = 0; // CANTIDAD DE JUGADORES CON TURNOS EN FALSE
-        //    int nroMano = juego.NumeroMano;
-        //    var nroRonda = juego.NumeroRonda;
-        //    var jugador = ObtenerJugador(Context.ConnectionId);
-        //    var carta = jugador.ListaCartas.Where(x => x.Codigo == codigoCarta).Single();
-        //    //Jugador ProximoJugador = null;
-        //    CartasMesa CartaTirada = new CartasMesa();
-
-        //    if (turnoF != 4) //SI EL CONTADOR turnoF ES DISTINTO DE 4
-        //    {
-        //        if ((nroRonda == 0) && (nroMano == 1)) //SI LA RONDA ES LA PRIMERA Y LA MANO ES LA PRIMERA
-        //        {
-        //            //foreach (var jugadorSeleccionado in juego.ListaJugadores) //BUSCO EN LA LISTA QUE CREE DONDE ESTAN TODOS LOS JUGADORES SIN IMPORTAR SU EQUIPO
-        //            //{
-        //            //    if (jugadorSeleccionado.IdConexion == Context.ConnectionId) //VEO SI EL JUGADOR QUE TIENE EL CONTEXT ES EL MISMO QUE ESTA SELECCIONADO EN LA LISTA EN ESE MOMENTO
-        //            //    {
-        //            //        Clients.All.mostrarCarta(carta, jugadorSeleccionado.NombreInterno, juego.NumeroMano); //HAGO QUE JUEGUE LA CARTA
-        //            //        Clients.Client(jugadorSeleccionado.IdConexion).deshabilitarMovimientos(); //LE DESHABILITO EL MOVIMIENTO
-        //            //        Clients.Client(jugadorSeleccionado.IdConexion).habilitarMovimientos(); //LE HABILITO EL MOVIMIENTO AL PROXIMO
-        //            //        turnoF++; //SUMO 1 A TURNOF
-        //            //        jugadorSeleccionado.Turno = false; // LE PONGO EN FALSE LA PROPIEDAD TURNO
-        //            //    }                        
-        //            //}//ESTO SE DEBERIA REPETIR CON LOS 4 JUGADORES ANTES DE SALIR DEL FOREACH
-
-        //            for (int i = 0; i < juego.ListaJugadores.Count(); i++)
-        //            {
-        //                if (juego.ListaJugadores[i].IdConexion == Context.ConnectionId) //VEO SI EL JUGADOR QUE TIENE EL CONTEXT ES EL MISMO QUE ESTA SELECCIONADO EN LA LISTA EN ESE MOMENTO
-        //                {
-        //                    Clients.All.mostrarCarta(carta, juego.ListaJugadores[i].NombreInterno, juego.NumeroMano); //HAGO QUE JUEGUE LA CARTA
-        //                    Clients.Client(juego.ListaJugadores[i].IdConexion).deshabilitarMovimientos(); //LE DESHABILITO EL MOVIMIENTO
-        //                    Clients.Client(juego.ListaJugadores[i + 1].IdConexion).habilitarMovimientos(); //LE HABILITO EL MOVIMIENTO AL PROXIMO
-        //                    turnoF++; //SUMO 1 A TURNOF
-        //                    juego.ListaJugadores[i].Turno = false; // LE PONGO EN FALSE LA PROPIEDAD TURNO
-        //                }
-        //            }//ESTO SE DEBERIA REPETIR CON LOS 4 JUGADORES ANTES DE SALIR DEL FOREACH
-        //            turnoF = 0; //CUANDO SALE DEL FOREACH LE PONGO EN 0 LA PROPIEDAD TURNOF ASI EN EL SIGUENTE IF PUEDO SEGURI HACIENDO COTRAS COSAS
-        //            foreach (var jugadores in juego.ListaJugadores)//Y TAMBIEN LE PONGO EN TRUE DE VUELTA EL TURNO A TODOS LOS JUGADORES YA QUE JUGARON LA MANO
-        //            {
-        //                jugadores.Turno = true;
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        nroMano++;
-        //    }
-        //}
     }
 }
