@@ -168,14 +168,22 @@ namespace Truco.Web.Hubs
                             var confirmacion = true; //Variable en la que voy a guardar si el jugador del equipo contrario acepta o no la accion
                             switch (accion)
                             {
-                                case "me voy al mazo": //Aca habria que agregar una propiedad a jugador PosibilidadEnvido que arranque en true ya que si un jugador de un equipo canta el truco antes que el otro jugador tenga la posibildiad
-                                    if (jugadorSeleccionado.Equipo == "Equipo 1")//de cantar el envido se deberian sumar 2 puntos en vez de 1
+                                case "me voy al mazo":
+                                    if (jugadorSeleccionado.Equipo == "Equipo 1")
                                     {
                                         juego.Equipo2.Puntos++;
+                                        if (jugadorSeleccionado.Mano > 1) //Estos If estan hechos porque si un equipo se va al mazo sin darle la posibilidad al otro de cantar el Envido se tiene que sumar 2 puntos
+                                        {                                 //en vez de 1, pero esto solo se haria si la mano = 1 (que ya es una condicion del if de mas arriba) y si el jugador tiene mano > 1 es decir, todos menos el ultimo
+                                            juego.Equipo2.Puntos++;
+                                        }
                                     }
                                     if (jugadorSeleccionado.Equipo == "Equipo 2")
                                     {
                                         juego.Equipo1.Puntos++;
+                                        if (jugadorSeleccionado.Mano >1 )
+                                        {
+                                            juego.Equipo1.Puntos++;
+                                        }
                                     }
                                     break;
                                 case "envido": 
