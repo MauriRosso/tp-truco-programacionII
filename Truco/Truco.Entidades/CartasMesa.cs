@@ -8,8 +8,7 @@ namespace Truco.Entidades
 {
     public class CartasMesa
     {
-        public string IdJugador { get; set; } //id del jugador que tiro la carta
-        public string Equipo { get; set; } //equipo del jugador que tiro la carta
+        public Jugador Jugador { get; set; } //jugador que tiro la carta
         public int Mano { get; set; }//mano en la que jugo esa carta (1, 2 o 3)
         public Cartas Carta { get; set; }//carta que jugo el jugador
     }

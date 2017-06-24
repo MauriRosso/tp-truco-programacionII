@@ -10,111 +10,71 @@ namespace Truco.Web.Hubs
 {
     [HubName("truco")]
     public class Truco : Hub
-    {
+    {       
         public static Partida juego = new Partida();
-
         public void AgregarJugador(string nombre)
         {
             Jugador Jugador = new Jugador();
 
-            if (juego.ListaJugadores.Count() >= 2)
+            if (juego.CantidadJugadores == 4)
             {
-                if (juego.ListaJugadores.Count() == 4)
-                {
-                    // Si el juego esta completo...
-                    Clients.Caller.mostrarmensaje("El juego ya está completo!");
-                }
-                else
-                {
-                    if (juego.ListaJugadores.Count() == 3)
-                    {
-                        Jugador.Nombre = nombre;
-                        Jugador.IdConexion = Context.ConnectionId;
-                        Jugador.NombreInterno = $"user{juego.Equipo2.ListaJugadores.Count + 3}";
-                        Jugador.Orden = juego.ID + 1;
-                        Jugador.Turno = true;
-                        juego.Equipo2.ListaJugadores.Add(Jugador);
-                        juego.ListaJugadores.Add(Jugador);
-                        //Clients.Others.mostrarnuevousuario(nombre);
-                    }
-                    else
-                    {
-                        Jugador.Nombre = nombre;
-                        Jugador.IdConexion = Context.ConnectionId;
-                        Jugador.NombreInterno = $"user{juego.Equipo1.ListaJugadores.Count + 2}";
-                        Jugador.Orden = juego.ID + 1;
-                        Jugador.Turno = true;
-                        juego.Equipo1.ListaJugadores.Add(Jugador);
-                        juego.ListaJugadores.Add(Jugador);
-                        //Clients.Others.mostrarnuevousuario(nombre);
-                    }
-                    if (juego.Equipo2.ListaJugadores.Count() == 2)
-                    {
-                        Clients.All.mostrarpuntos("Ellos", 0);
-                        Clients.All.mostrarpuntos("Nosotros", 0);
-                        Repartir();
-                    }
-                }
+                // Si el juego esta completo...
+                Clients.Caller.mostrarmensaje("El juego ya está completo!");
+            }
+            if (juego.CantidadJugadores == 0 || juego.CantidadJugadores == 2) //juego.ListaJugadores.Count() >= 2
+            {
+                juego.CantidadJugadores += 1;
+                Jugador.Nombre = nombre;
+                Jugador.IdConexion = Context.ConnectionId;
+                Jugador.NombreInterno = $"user{juego.ListaJugadores.Count() + 1}";
+                Jugador.Orden = juego.ID + 1;
+                Jugador.Turno = true;
+                Jugador.Equipo = "Equipo1";
+                juego.Equipo1.ListaJugadores.Add(Jugador);
+                juego.ListaJugadores.Add(Jugador);
+                Clients.Others.mostrarnuevousuario(nombre);
             }
             else
             {
-                // Sino ...
-                if (juego.ListaJugadores.Count() == 1)
+                juego.CantidadJugadores += 1;
+                Jugador.Nombre = nombre;
+                Jugador.IdConexion = Context.ConnectionId;
+                Jugador.NombreInterno = $"user{juego.ListaJugadores.Count() + 1}";
+                Jugador.Orden = juego.ID + 1;
+                Jugador.Turno = true;
+                Jugador.Equipo = "Equipo2";
+                juego.Equipo2.ListaJugadores.Add(Jugador);
+                juego.ListaJugadores.Add(Jugador);
+                Clients.Others.mostrarnuevousuario(nombre);
+                if (juego.CantidadJugadores == 4)
                 {
-                    Jugador.Nombre = nombre;
-                    Jugador.IdConexion = Context.ConnectionId;
-                    Jugador.NombreInterno = $"user{juego.Equipo2.ListaJugadores.Count() + 2}";
-                    Jugador.Orden = juego.ID + 1;
-                    Jugador.Turno = true;
-                    juego.Equipo2.ListaJugadores.Add(Jugador);
-                    juego.ListaJugadores.Add(Jugador);
-                    //Clients.Others.mostrarnuevousuario(nombre);
-                }
-                else
-                {
-                    Jugador.Nombre = nombre;
-                    Jugador.IdConexion = Context.ConnectionId;
-                    Jugador.NombreInterno = $"user{juego.Equipo1.ListaJugadores.Count() + 1}";
-                    Jugador.Orden = juego.ID + 1;
-                    Jugador.Turno = true;
-                    juego.Equipo1.ListaJugadores.Add(Jugador);
-                    juego.ListaJugadores.Add(Jugador);
-                    //Clients.Others.mostrarnuevousuario(nombre);
+                    Clients.All.mostrarpuntos("Ellos", 0);
+                    Clients.All.mostrarpuntos("Nosotros", 0);
+                    juego.NumeroMano = 1;
+                    juego.NumeroRonda = 0;
+                    Repartir();
                 }
             }
 
-            if (juego.ListaJugadores.Count() == 4)
+            foreach (var item in juego.ListaJugadores)
             {
-                foreach (var item in juego.ListaJugadores)
-                {
-                    // Por cada jugador
-                    Clients.All.mostrarNombre(item);
-                }
+                // Por cada jugador
+                Clients.All.mostrarNombre(item);
             }
 
             // Si es el ultimo jugador...
 
-
-
-
         }
-        private Jugador ObtenerJugador(string idConexion)
+        private Jugador ObtenerJugador(string idConexion)   
         {
             Jugador JugadorObtenido = null;
-            foreach (var Jug1 in juego.Equipo1.ListaJugadores)
+            foreach (var Jug in juego.ListaJugadores)
             {
-                if (idConexion == Jug1.IdConexion)
+                if (idConexion == Jug.IdConexion)
                 {
-                    JugadorObtenido = Jug1;
+                    JugadorObtenido = Jug;
                 }
-            }
-            foreach (var Jug1 in juego.Equipo2.ListaJugadores)
-            {
-                if (idConexion == Jug1.IdConexion)
-                {
-                    JugadorObtenido = Jug1;
-                }
-            }
+            }       
             return JugadorObtenido;
         }
 
@@ -122,6 +82,7 @@ namespace Truco.Web.Hubs
         {
             Clients.All.limpiarTablero();
             juego.PrepararMano(4);
+            juego.ListaJugadores.OrderByDescending(x => x.Mano); //Cada vez que reparto, ordeno la lista en base a la mano.
             foreach (var item in juego.Equipo1.ListaJugadores)
             {
                 Clients.Client(item.IdConexion).mostrarCartas(item.ListaCartas);
@@ -132,20 +93,26 @@ namespace Truco.Web.Hubs
                 Clients.Client(item.IdConexion).mostrarCartas(item.ListaCartas);
             }
 
-            Clients.Client(juego.Equipo1.ListaJugadores[0].IdConexion).habilitarMovimientos();
-            //Clients.Client(...).hideEnvidoEnvidoBotton();
-            //Clients.Client(...).hideVale4Botton();
-            //Clients.Client(...).hideReTrucoBotton();
-            //Clients.Client(...).showEnvidoBotton();
-            //Clients.Client(...).showTrucoBotton();
-            //Clients.Client(...).showRealEnvidoBotton();
-            //Clients.Client(...).showFaltaEnvidoBotton();
+            Clients.Client(juego.ListaJugadores[0].IdConexion).habilitarMovimientos(); //Habilito el mov. del primer jugador para comenzar a jugar
+
+            //foreach (var item in juego.ListaJugadores)
+            //{
+            //    Clients.Client(item.IdConexion).showEnvidoBotton();
+            //    Clients.Client(item.IdConexion).showTrucoBotton();
+            //    Clients.Client(item.IdConexion).showRealEnvidoBotton();
+            //    Clients.Client(item.IdConexion).showFaltaEnvidoBotton();
+            //}
+
+            //Clients.Client(item.IdConexion).hideEnvidoEnvidoBotton();
+            //Clients.Client(item.IdConexion).hideVale4Botton();
+            //Clients.Client(item.IdConexion).hideReTrucoBotton();
+
+            //Clients.Client(item.IdConexion).hideEnvidoOptions();
+            //Clients.Client(item.IdConexion).hideTrucoBotton();
+            //Clients.Client(item.IdConexion).hideReTrucoBotton();
+            //Clients.Client(item.IdConexion).hideVale4Botton();
 
             //Clients.Client(...).desabilitarMovimientos();
-            //Clients.Client(...).hideEnvidoOptions();
-            //Clients.Client(...).hideTrucoBotton();
-            //Clients.Client(...).hideReTrucoBotton();
-            //Clients.Client(...).hideVale4Botton();              
         }
 
         //public void cantar(string accion) 
@@ -223,191 +190,173 @@ namespace Truco.Web.Hubs
         //    }
         //}
 
-        public void JugarCartaa(string codigoCarta)
+        public void JugarCarta(string codigoCarta) //ANDA DE 10!!!!! SIGAN ESTE METODO, FALTA CANTAR EL ENVIDO Y TRUCO Y DEMAS. LA RONDA AHORA SIGUE EL SENTIDO LOGICO.
         {
-            //Clients.Client(jugador.IdConexion).deshabilitarMovimientos();
             // 1- Ejecutar el codigo seteando el numero de mano/ronda correspondiente.
             // 2- Habilitar los movimientos del siguiente jugador y deshabilitar el actual.
             // 3- Habilitar acciones correspondientes.
 
-
             var jugador = ObtenerJugador(Context.ConnectionId);
             var carta = jugador.ListaCartas.Where(x => x.Codigo == codigoCarta).Single();
 
-            //foreach (var jugadorSel in juego.Equipo1.ListaJugadores)
-            //{
-            //    var mayorTurno = juego.Equipo1.ListaJugadores.Where(x => x.Turno).Max(x => x.Mano);
-            //    var jugadorConTurno = juego.Equipo1.ListaJugadores.Where(x => x.Mano == mayorTurno).Single();
-            //}
-
-            var mayorTurno = 0;
-            var idMay = "asd";
             Jugador ProximoJugador = null;
             CartasMesa CartaTirada = new CartasMesa();
-            foreach (var item in juego.Equipo1.ListaJugadores)
+
+            foreach (var item in juego.ListaJugadores)
             {
-                if (item.Turno)
+                if (item.IdConexion == jugador.IdConexion) //Busco el jugador que hizo la llamada, en la lista.
                 {
-                    if (item.Mano > mayorTurno)
-                    {
-                        mayorTurno = item.Mano;
-                        idMay = item.IdConexion;
-                        CartaTirada.Equipo = "Equipo1";
-                        CartaTirada.IdJugador = item.IdConexion;
-                        CartaTirada.Mano = juego.NumeroMano;
-                    }
+                    CartaTirada.Jugador = item;
+                    CartaTirada.Mano = juego.NumeroMano;
+                    CartaTirada.Carta = carta;
+                    juego.ListaCartasJugadas.Add(CartaTirada);//Se cargan las cartas que se van jugando en una lista
                 }
             }
-            foreach (var item in juego.Equipo2.ListaJugadores)
-            {
-                if (item.Turno)
-                {
-                    if (item.Mano > mayorTurno)
-                    {
-                        mayorTurno = item.Mano;
-                        idMay = item.IdConexion;
-                        CartaTirada.Equipo = "Equipo2";
-                        CartaTirada.IdJugador = item.IdConexion;
-                        CartaTirada.Mano = juego.NumeroMano;
-                    }
-                }
-            }
-            juego.CartasJugadas += 1;
-            //seteo el turno del jugador que tiro la carta en false
-            foreach (var item in juego.Equipo1.ListaJugadores)
-            {
-                if (idMay == item.IdConexion)
-                {
-                    item.Turno = false;
-                }
-            }
-            foreach (var item in juego.Equipo2.ListaJugadores)
-            {
-                if (idMay == item.IdConexion)
-                {
-                    item.Turno = false;
-                }
-            }
-                      
-            if (juego.NumeroMano == 0)
-            {
-                juego.NumeroMano = 1;
-            }
-           
-            CartaTirada.Carta = carta;
-            juego.ListaCartasJugadas.Add(CartaTirada);//Se cargan las cartas que se van jugando en una lista
+            
+            juego.CartasJugadas += 1;                                                               
             Clients.All.mostrarCarta(carta, jugador.NombreInterno, juego.NumeroMano);
             Clients.Client(jugador.IdConexion).deshabilitarMovimientos(); //deshabilito el movimiento al jdr que acaba de tirar
 
-            if (juego.CartasJugadas == 4) //quiere decir que se termino una mano.
-            {
-                juego.NumeroMano = juego.NumeroMano;
-                juego.NumeroMano++;
-                juego.CartasJugadas = 0; //reestablesco el valor a 0 nuevamente para la proxima mano.
-                juego.Equipo1.ListaJugadores[0].Turno = true;
-                juego.Equipo1.ListaJugadores[1].Turno = true;
-                juego.Equipo2.ListaJugadores[0].Turno = true;
-                juego.Equipo2.ListaJugadores[1].Turno = true;
-
+            if (juego.CartasJugadas == 4) //SE TERMINO UNA MANO.
+            {         
                 Cartas mayCarta = null;
-                string idJugadorMayorCarta = "";
-                bool BanderaPrimerCarta = false;
+                string mayEquipoCarta = "";
+                Jugador JugadorMayorCarta = null;
+                bool banderaPrimerCarta = false;
+                bool empateContinua = false;
+                bool empateNoContinua = false;
+
                 foreach (var item in juego.ListaCartasJugadas) //Se saca la mayor carta de la mano.
                 {
-                    if (item.Mano == juego.NumeroMano - 1) //encontre las cartas que se jugaron en la mano que se jugo recien
+                    if (item.Mano == juego.NumeroMano) //encontre las cartas que se jugaron en la mano que se jugo recien
                     {
-                        if (BanderaPrimerCarta == false) //si es la primer carta de la mano que voy a comparar
+                        if (banderaPrimerCarta == false) //si es la primer carta de la mano que voy a comparar
                         {
-                            BanderaPrimerCarta = true;
+                            banderaPrimerCarta = true;
                             mayCarta = item.Carta;
-                            idJugadorMayorCarta = item.IdJugador;
+                            mayEquipoCarta = item.Jugador.Equipo;
+                            JugadorMayorCarta = item.Jugador;                            
                         }
                         else
                         {
                             if (item.Carta.Valor > mayCarta.Valor)
-                            {
+                            {                               
                                 mayCarta = item.Carta;
-                                idJugadorMayorCarta = item.IdJugador;
+                                mayEquipoCarta = item.Jugador.Equipo;
+                                JugadorMayorCarta = item.Jugador;
+                            }
+                            else
+                            {
+                                if (item.Carta.Valor == mayCarta.Valor) //Si hay empate en las cartas mayores
+                                {
+                                    if (item.Jugador.Equipo != mayEquipoCarta)//Si las cartas empatadas son de distintos equipos
+                                    {
+                                        if (juego.NumeroMano == 1)
+                                        {
+                                            //Si este empate se da en la mano 1, el juego CONTINUA, se ve quien es mano para ver quien sigue, y en la mano siguiente se define.NOTA: Para darse esto, las cartas igualadas deben ser de DISTINTO equipo.
+                                            empateContinua = true;
+                                            if (item.Jugador.Mano > JugadorMayorCarta.Mano) //Se ve quien es mano
+                                            {
+                                                mayCarta = item.Carta;
+                                                JugadorMayorCarta = item.Jugador;
+                                            }
+                                        }
+                                        else //Si se da en la mano 2 o 3, el juego NO CONTINUA. Se ve que equipo gano la mano 1 para definir al ganador de la mano.
+                                        {
+                                            empateNoContinua = true;
+                                        }
+                                    }                                 
+                                }
                             }
                         }
                     }
                 }
-                foreach (var item in juego.Equipo1.ListaJugadores)
+                foreach (var item in juego.ListaJugadores)
                 {
-                    if (item.IdConexion == idJugadorMayorCarta)
+                    if (item.IdConexion == JugadorMayorCarta.IdConexion)
                     {
                         ProximoJugador = item;
-                    }
-                }
-                foreach (var item in juego.Equipo2.ListaJugadores)
-                {
-                    if (item.IdConexion == idJugadorMayorCarta)
-                    {
-                        ProximoJugador = item;
+                        break; //Para no seguir recorriendo la lista sin sentido, ya que encontre lo que buscaba.
                     }
                 }
                 Clients.Client(ProximoJugador.IdConexion).habilitarMovimientos(); //habilito movimiento al jugador que tuvo la carta mas alta de la mano.
 
+                juego.NumeroMano++;
+                juego.CartasJugadas = 0; //reestablesco el valor a 0 nuevamente para la proxima mano.
             }
-            /////////////////////////////////////////////////////////////////////////////////////////
-            //LOS JUGADORES ESTAN MAL SENTADOS, CORREGIR!!! (deben sentarse uno enfrentado al otro)//
-            /////////////////////////////////////////////////////////////////////////////////////////
-
-            //habilito el movimiento al proximo jugador
-            if (mayorTurno > 1) // Esto quiere decir que todavia queda alguien por tirar en la mano
+            else //Todavia queda alguien por jugar en la mano.
             {
-                foreach (var item in juego.Equipo1.ListaJugadores)
+                //habilito el movimiento al proximo jugador
+                for (int i = 0; i < juego.ListaJugadores.Count(); i++)
                 {
-                    if (item.Mano == mayorTurno - 1)
+                    if (jugador.IdConexion == juego.ListaJugadores[i].IdConexion) //Encuentro al proximo jugador
                     {
-                        ProximoJugador = item;
-                    }
-                }
-                foreach (var item in juego.Equipo2.ListaJugadores)
-                {
-                    if (item.Mano == mayorTurno - 1)
-                    {
-                        ProximoJugador = item;
+                        if (i + 1 > 3) // Garantizo que la lista sea circular, es decir que no se desborde.
+                        {
+                            ProximoJugador = juego.ListaJugadores[0];
+                        }
+                        else
+                        {
+                            ProximoJugador = juego.ListaJugadores[i + 1];
+                        }                       
+                        break;
                     }
                 }
                 Clients.Client(ProximoJugador.IdConexion).habilitarMovimientos();
-            }
-            // NOTA: Una vez que todos jugaron su primera carta, tengo que ver a quien volver a habilitar su movimiento para que siga con la mano 2 (depende quien gano la primera)
-        } //MAURI, TRATE DE SEGUIR TU METODO PERO NO PUDE ENTENDER BIEN COMO HACER QUE SIGA FUNCIONANDO Y ESTOY TRATANDO DE HACER OTRO. TE AVISO DE ESTO PORQUE LE CAMBIE EL NOMBRE A TU METODO
-        //ASI ARRANCABA EL MIO PARA PODER PROBARLO
+            }             
+        }  
 
-        public void JugarCarta(string codigoCarta)
-        {
-            var turnoF = 0; // CANTIDAD DE JUGADORES CON TURNOS EN FALSE
-            var nroRonda = juego.NumeroRonda;
-            var nroMano = juego.NumeroMano;
-            var jugador = ObtenerJugador(Context.ConnectionId);
-            var carta = jugador.ListaCartas.Where(x => x.Codigo == codigoCarta).Single();
-            //Jugador ProximoJugador = null;
-            CartasMesa CartaTirada = new CartasMesa();
+        //public void JugarCarta(string codigoCarta)
+        //{
 
-            if (turnoF != 4) //SI EL CONTADOR turnoF ES DISTINTO DE 4
-            {
-                if ((nroRonda == 0) && (nroMano == 0)) //SI LA RONDA ES LA PRIMERA Y LA MANO ES LA PRIMERA
-                {
-                    foreach (var jugadorSeleccionado in juego.ListaJugadores) //BUSCO EN LA LISTA QUE CREE DONDE ESTAN TODOS LOS JUGADORES SIN IMPORTAR SU EQUIPO
-                    {
-                        if (jugadorSeleccionado.IdConexion == Context.ConnectionId) //VEO SI EL JUGADOR QUE TIENE EL CONTEXT ES EL MISMO QUE ESTA SELECCIONADO EN LA LISTA EN ESE MOMENTO
-                        {
-                            Clients.Client(jugadorSeleccionado.IdConexion).habilitarMovimientos(); //LE HABILITO EL MOVIMIENTO
-                            Clients.All.mostrarCarta(carta, jugadorSeleccionado.NombreInterno, juego.NumeroMano); //HAGO QUE JUEGUE LA CARTA
-                            Clients.Client(jugadorSeleccionado.IdConexion).deshabilitarMovimientos(); //LE DESHABILITO EL MOVIMIENTO
-                            turnoF++; //SUMO 1 A TURNOF
-                            jugadorSeleccionado.Turno = false; // LE PONGO EN FALSE LA PROPIEDAD TURNO
-                        }                        
-                    }//ESTO SE DEBERIA REPETIR CON LOS 4 JUGADORES ANTES DE SALIR DEL FOREACH
-                    turnoF = 0; //CUANDO SALE DEL FOREACH LE PONGO EN 0 LA PROPIEDAD TURNOF ASI EN EL SIGUENTE IF PUEDO SEGURI HACIENDO COTRAS COSAS
-                    foreach (var jugadores in juego.ListaJugadores)//Y TAMBIEN LE PONGO EN TRUE DE VUELTA EL TURNO A TODOS LOS JUGADORES YA QUE JUGARON LA MANO
-                    {
-                        jugadores.Turno = true;
-                    }
-                }
-            }
-        }
+        //    //LA LOGICA ES DESHABILITAR EL MOVIMIENTO DEL JUG. ACTUAL Y HABILITAR EL MOV. DEL PROXIMO JUGADOR.
+
+        //    int turnoF = 0; // CANTIDAD DE JUGADORES CON TURNOS EN FALSE
+        //    int nroMano = juego.NumeroMano;
+        //    var nroRonda = juego.NumeroRonda;
+        //    var jugador = ObtenerJugador(Context.ConnectionId);
+        //    var carta = jugador.ListaCartas.Where(x => x.Codigo == codigoCarta).Single();
+        //    //Jugador ProximoJugador = null;
+        //    CartasMesa CartaTirada = new CartasMesa();
+
+        //    if (turnoF != 4) //SI EL CONTADOR turnoF ES DISTINTO DE 4
+        //    {
+        //        if ((nroRonda == 0) && (nroMano == 1)) //SI LA RONDA ES LA PRIMERA Y LA MANO ES LA PRIMERA
+        //        {
+        //            //foreach (var jugadorSeleccionado in juego.ListaJugadores) //BUSCO EN LA LISTA QUE CREE DONDE ESTAN TODOS LOS JUGADORES SIN IMPORTAR SU EQUIPO
+        //            //{
+        //            //    if (jugadorSeleccionado.IdConexion == Context.ConnectionId) //VEO SI EL JUGADOR QUE TIENE EL CONTEXT ES EL MISMO QUE ESTA SELECCIONADO EN LA LISTA EN ESE MOMENTO
+        //            //    {
+        //            //        Clients.All.mostrarCarta(carta, jugadorSeleccionado.NombreInterno, juego.NumeroMano); //HAGO QUE JUEGUE LA CARTA
+        //            //        Clients.Client(jugadorSeleccionado.IdConexion).deshabilitarMovimientos(); //LE DESHABILITO EL MOVIMIENTO
+        //            //        Clients.Client(jugadorSeleccionado.IdConexion).habilitarMovimientos(); //LE HABILITO EL MOVIMIENTO AL PROXIMO
+        //            //        turnoF++; //SUMO 1 A TURNOF
+        //            //        jugadorSeleccionado.Turno = false; // LE PONGO EN FALSE LA PROPIEDAD TURNO
+        //            //    }                        
+        //            //}//ESTO SE DEBERIA REPETIR CON LOS 4 JUGADORES ANTES DE SALIR DEL FOREACH
+
+        //            for (int i = 0; i < juego.ListaJugadores.Count(); i++)
+        //            {
+        //                if (juego.ListaJugadores[i].IdConexion == Context.ConnectionId) //VEO SI EL JUGADOR QUE TIENE EL CONTEXT ES EL MISMO QUE ESTA SELECCIONADO EN LA LISTA EN ESE MOMENTO
+        //                {
+        //                    Clients.All.mostrarCarta(carta, juego.ListaJugadores[i].NombreInterno, juego.NumeroMano); //HAGO QUE JUEGUE LA CARTA
+        //                    Clients.Client(juego.ListaJugadores[i].IdConexion).deshabilitarMovimientos(); //LE DESHABILITO EL MOVIMIENTO
+        //                    Clients.Client(juego.ListaJugadores[i + 1].IdConexion).habilitarMovimientos(); //LE HABILITO EL MOVIMIENTO AL PROXIMO
+        //                    turnoF++; //SUMO 1 A TURNOF
+        //                    juego.ListaJugadores[i].Turno = false; // LE PONGO EN FALSE LA PROPIEDAD TURNO
+        //                }
+        //            }//ESTO SE DEBERIA REPETIR CON LOS 4 JUGADORES ANTES DE SALIR DEL FOREACH
+        //            turnoF = 0; //CUANDO SALE DEL FOREACH LE PONGO EN 0 LA PROPIEDAD TURNOF ASI EN EL SIGUENTE IF PUEDO SEGURI HACIENDO COTRAS COSAS
+        //            foreach (var jugadores in juego.ListaJugadores)//Y TAMBIEN LE PONGO EN TRUE DE VUELTA EL TURNO A TODOS LOS JUGADORES YA QUE JUGARON LA MANO
+        //            {
+        //                jugadores.Turno = true;
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        nroMano++;
+        //    }
+        //}
     }
 }
