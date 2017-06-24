@@ -12,6 +12,7 @@ namespace Truco.Web.Hubs
     public class Truco : Hub
     {       
         public static Partida juego = new Partida();
+
         public void AgregarJugador(string nombre)
         {
             Jugador Jugador = new Jugador();
@@ -65,6 +66,7 @@ namespace Truco.Web.Hubs
             // Si es el ultimo jugador...
 
         }
+
         private Jugador ObtenerJugador(string idConexion)   
         {
             Jugador JugadorObtenido = null;
@@ -97,11 +99,7 @@ namespace Truco.Web.Hubs
 
             foreach (var item in juego.ListaJugadores)
             {                       
-                Clients.Client(item.IdConexion).hideTrucoBotton();
-                Clients.Client(item.IdConexion).hideReTrucoBotton();
-                Clients.Client(item.IdConexion).hideVale4Botton();
-
-                Clients.Client(item.IdConexion).hideEnvidoOptions();
+                item.Turno = false;
             }
 
             //Clients.Client(item.IdConexion).hideEnvidoOptions();
@@ -112,84 +110,162 @@ namespace Truco.Web.Hubs
             //Clients.Client(...).desabilitarMovimientos();
         }
 
+        public Jugador ProximoJugador (string idConexion)
+        {
+            var jugador = ObtenerJugador(idConexion);
+            Jugador ProximoJugador = null;
+
+            for (int i = 0; i < juego.ListaJugadores.Count(); i++)
+            {
+                if (jugador.IdConexion == juego.ListaJugadores[i].IdConexion) //Encuentro al proximo jugador
+                {
+                    if (i + 1 > 3) // Garantizo que la lista sea circular, es decir que no se desborde.
+                    {
+                        ProximoJugador = juego.ListaJugadores[0];
+                    }
+                    else
+                    {
+                        ProximoJugador = juego.ListaJugadores[i + 1];
+                    }
+                    break;
+                }
+            }
+            return ProximoJugador;
+        }
+
         public void cantar(string accion)
         {
             var jugador = ObtenerJugador(Context.ConnectionId);
 
-            Clients.Others.mostrarmensaje("{0}, canto {1}", jugador.Nombre, accion);
-            Clients.Caller.mostrarmensaje("Yo cante {0}", accion);
-            Clients.Client(jugador.IdConexion).deshabilitarMovimientos();
-
-            // Si el juego termino...
-            Clients.Client(jugador.IdConexion).mostrarMensajeFinal(true); // GANADOR
-            Clients.Client(jugador.IdConexion).mostrarMensajeFinal(false); // PERDEDOR
-            Clients.All.deshabilitarMovimientos();
-
-            // Sino
-            Clients.All.limpiarpuntos();
-
-            // Y mostrar puntos y repartir.
-
-
-            switch (accion)
+            foreach (var jugadorSeleccionado in juego.ListaJugadores) //busco el jugador que canta en la lista de jugadores
             {
-                case "me voy al mazo":
-                    break;
-                case "envido":
-                    Clients.Caller.hideEnvidoOptions();                   
-                    Clients.Others.showEnvidoOptions();
+                if (jugador.IdConexion == jugadorSeleccionado.IdConexion)
+                {
+                    jugadorSeleccionado.Turno = true; //voy a usar la propiedad Turno para hacer que los que tengan True unicamente puedan cantar (en el metodo Repartir setee a todos los jugadores con Turno = false)
+                    if (jugadorSeleccionado.Turno) //me aseguro que tenga la propiedad true por las dudas
+                    {
+                        if (jugadorSeleccionado.Mano == 2 || jugadorSeleccionado.Mano == 1 && juego.NumeroMano == 1) //al fijarse si estos jugadores tienen Mano == 2 || Mano == 1 significa que son los ultimos 2 jugadores de la mano
+                        {                                                                                            // numero 1, y los unicos que pueden cantar el envido
+                            Clients.Others.mostrarmensaje("{0}, canto {1}", jugador.Nombre, accion);
+                            Clients.Caller.mostrarmensaje("Yo cante {0}", accion);  //estas cosas venian con lo que nos dio el profe
+                            Clients.Client(jugador.IdConexion).deshabilitarMovimientos();
 
-                    Clients.All.hideTrucoBotton();
-                    Clients.All.hideReTrucoBotton();
-                    Clients.All.hideVale4Botton();
-                    Clients.All.hidemazo();
-                    break;
-                case "envidoenvido":
-                    Clients.All.hidemazo();
-                    Clients.All.hideTrucoBotton();
-                    Clients.All.hideReTrucoBotton();
-                    Clients.All.hideVale4Botton();
+                            //// Si el juego termino...
+                            //Clients.Client(jugador.IdConexion).mostrarMensajeFinal(true); // GANADOR
+                            //Clients.Client(jugador.IdConexion).mostrarMensajeFinal(false); // PERDEDOR
+                            //Clients.All.deshabilitarMovimientos();
 
-                    Clients.All.hideEnvidoEnvidoBotton();
-                    Clients.All.hideEnvidoBotton();
-                    Clients.Others.showRealEnvidoBotton();
-                    Clients.Others.showFaltaEnvidoBotton();
-                    Clients.Caller.hideEnvidoOptions();
-                    break;
-                case "faltaenvido":
-                    Clients.All.hidemazo();
-                    Clients.All.hideTrucoBotton();
-                    Clients.All.hideReTrucoBotton();
-                    Clients.All.hideVale4Botton();
+                            //// Sino
+                            //Clients.All.limpiarpuntos();
 
-                    Clients.All.hideEnvidoOptions();
-                    break;
-                case "realenvido":
-                    Clients.All.hidemazo();
-                    Clients.All.hideTrucoBotton();
-                    Clients.All.hideReTrucoBotton();
-                    Clients.All.hideVale4Botton();
+                            // Y mostrar puntos y repartir.
 
-                    Clients.All.hideEnvidoOptions();
-                    Clients.Others.showFaltaEnvidoBotton();
-                    break;
-                case "truco":
-                    Clients.All.hideEnvidoOptions();
+                            //aca arranque de vuelta yo
+                            var confirmacion = true; //Variable en la que voy a guardar si el jugador del equipo contrario acepta o no la accion
+                            switch (accion)
+                            {
+                                case "me voy al mazo": //Aca habria que agregar una propiedad a jugador PosibilidadEnvido que arranque en true ya que si un jugador de un equipo canta el truco antes que el otro jugador tenga la posibildiad
+                                    if (jugadorSeleccionado.Equipo == "Equipo 1")//de cantar el envido se deberian sumar 2 puntos en vez de 1
+                                    {
+                                        juego.Equipo2.Puntos++;
+                                    }
+                                    if (jugadorSeleccionado.Equipo == "Equipo 2")
+                                    {
+                                        juego.Equipo1.Puntos++;
+                                    }
+                                    break;
+                                case "envido": 
+                                    if (jugadorSeleccionado.Equipo == "Equipo 1") //me fijo si el que canto el envido esta en el equipo 1
+                                    {                                       
+                                        foreach (var jugadorEquipoContrario in juego.Equipo2.ListaJugadores)//busco los jugadores del equipo 2
+                                        {
+                                            var siguienteJugador = ProximoJugador(jugadorEquipoContrario.IdConexion);//elijo el proximo jugador para que decida si acepta o no, ya que si dejariamos que los 2 elijan si quieren o no se armaria un quilombo
+                                           
+                                                //jugadorEquipoContrario(Context.ConnectionId).hideTrucoBotton();//primero mostarle al jugadorEquipoContrario el boton QuieroEnvido o, habilitarle los demas botones de las opciones Envido por si quiere cantar otra cosa
+                                                //jugadorEquipoContrario.showQuieroEnvido(); //aca no encuentro la funcion de js para poder agregar en al variable "confirmacion" el valor de si quiere o no el envido                                                                                    
+                                        }
+                                    }
+                                    if (jugadorSeleccionado.Equipo == "Equipo 2")
+                                    {
 
-                    Clients.All.showmazo();
-                    Clients.Others.showTrucoBotton();
-                    break;
-                case "retruco":
-                    Clients.All.showmazo();
-                    Clients.Others.showVale4Botton();
-                    break;
-                case "vale4":
-                    Clients.All.showmazo();
-                    Clients.All.hideTrucoBotton();
-                    Clients.All.hideReTrucoBotton();
-                    Clients.All.hideVale4Botton();
-                    break;
-            }
+                                    }
+                                    break;
+                                case "envidoenvido":
+                                    Clients.All.hidemazo();
+                                    Clients.All.hideTrucoBotton();
+                                    Clients.All.hideReTrucoBotton();
+                                    Clients.All.hideVale4Botton();
+
+                                    Clients.All.hideEnvidoEnvidoBotton();
+                                    Clients.All.hideEnvidoBotton();
+                                    Clients.Others.showRealEnvidoBotton();
+                                    Clients.Others.showFaltaEnvidoBotton();
+                                    Clients.Caller.hideEnvidoOptions();
+                                    break;
+                                case "faltaenvido":
+                                    Clients.All.hidemazo();
+                                    Clients.All.hideTrucoBotton();
+                                    Clients.All.hideReTrucoBotton();
+                                    Clients.All.hideVale4Botton();
+
+                                    Clients.All.hideEnvidoOptions();
+                                    break;
+                                case "realenvido":
+                                    Clients.All.hidemazo();
+                                    Clients.All.hideTrucoBotton();
+                                    Clients.All.hideReTrucoBotton();
+                                    Clients.All.hideVale4Botton();
+
+                                    Clients.All.hideEnvidoOptions();
+                                    Clients.Others.showFaltaEnvidoBotton();
+                                    break;
+                                case "truco":
+                                    Clients.All.hideEnvidoOptions();
+
+                                    Clients.All.showmazo();
+                                    Clients.Others.showReTrucoBotton();
+                                    break;
+                                case "retruco":
+                                    Clients.All.showmazo();
+                                    Clients.Others.showVale4Botton();
+                                    break;
+                                case "vale4":
+                                    Clients.All.showmazo();
+                                    Clients.All.hideTrucoBotton();
+                                    Clients.All.hideReTrucoBotton();
+                                    Clients.All.hideVale4Botton();
+                                    break;
+                            }
+
+
+                        }
+                    }
+                    else
+                    {
+                        Clients.Caller.hideEnvidoOptions();
+                        switch (accion)
+                        {
+                            case "me voy al mazo":
+                                break;                           
+                            case "truco":
+                                Clients.All.showmazo();
+                                Clients.All.hideTrucoBotton();
+                                Clients.Others.showReTrucoBotton();
+                                break;
+                            case "retruco":
+                                Clients.All.showmazo();
+                                Clients.Others.showVale4Botton();
+                                break;
+                            case "vale4":
+                                Clients.All.showmazo();
+                                Clients.All.hideTrucoBotton();
+                                Clients.All.hideReTrucoBotton();
+                                Clients.All.hideVale4Botton();
+                                break;
+                        }
+                    }               
+                }                
+            }           
         }
 
         //public void EjecutarAccion(string accion, bool confirmacion)

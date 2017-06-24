@@ -64,6 +64,10 @@ $(function() {
         trucoHub.server.agregarJugador(userName);        
     });
 
+    $("#bottonAcciones").click(function () {
+        trucoHub.server.cantar("");
+    });
+
     $("#bottonMazo").click(function() {
         trucoHub.server.cantar("me voy al mazo");
     });

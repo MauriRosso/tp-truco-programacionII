@@ -394,16 +394,6 @@ namespace Truco.Entidades
 
 		}
 
-		public void JugarMano(int CantJug)
-		{
-			PrepararMano(CantJug);
-			Acciones Acc = new Acciones();
-			if (Acc.Envido)
-			{
-				MetodoEnvido();             
-			}
-		}
-
         private void MetodoDobleEnvido()
         {
             int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
@@ -542,12 +532,23 @@ namespace Truco.Entidades
             }
         }
 
-		public void PrepararMano(int CantidadJug)
+        public void JugarMano(int CantJug)
+        {
+            PrepararMano(CantJug);
+            Acciones Acc = new Acciones();
+            if (Acc.Envido)
+            {
+                MetodoEnvido();
+            }
+        }
+
+        public void PrepararMano(int CantidadJug)
 		{
 			this.RepartirCartas(CantidadJug);
 			this.AsignarMano(NumeroRonda);
 			this.CalcularPuntosEnvido();
 		}
+
 		public void MetodoJugarGeneral(int CantidadJugadores)
 		{
 			//Aca van todos los metodos que vayamos haciendo para jugar.
