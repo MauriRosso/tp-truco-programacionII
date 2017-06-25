@@ -350,8 +350,9 @@ namespace Truco.Entidades
 				}
 			}
 		}
-		public void MetodoEnvido()
+		public string MetodoEnvido()
 		{
+            Equipo Equipo = new Equipo();
             int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
 			int idMayorEquipo1 = Equipo1.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo1).ID;//Saco el mayor del equipo 1
 
@@ -361,10 +362,12 @@ namespace Truco.Entidades
 			if (mayorEquipo1 > mayorEquipo2)
 			{
 				Equipo1.Puntos += 2;
+                Equipo.Nombre = "Equipo1";
 			}
 			else if (mayorEquipo2 > mayorEquipo1)
 			{
 				Equipo2.Puntos += 2;
+                Equipo.Nombre = "Equipo2";
 			}
 			else
 			{
@@ -388,17 +391,20 @@ namespace Truco.Entidades
 				if (NroMano1 > NroMano2)
 				{
 					Equipo1.Puntos += 2;
-				}
+                    Equipo.Nombre = "Equipo1";
+                }
 				else
 				{
 					Equipo2.Puntos += 2;
-				}
+                    Equipo.Nombre = "Equipo2";
+                }
 			}
-
+            return Equipo.Nombre;
 		}
 
-        public void MetodoDobleEnvido()
+        public string MetodoDobleEnvido()
         {
+            Equipo Equipo = new Equipo();
             int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
             int idMayorEquipo1 = Equipo1.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo1).ID;//Saco el mayor del equipo 1
 
@@ -408,10 +414,12 @@ namespace Truco.Entidades
             if (mayorEquipo1 > mayorEquipo2)
             {
                 Equipo1.Puntos += 4;
+                Equipo.Nombre = "Equipo1";
             }
             else if (mayorEquipo2 > mayorEquipo1)
             {
                 Equipo2.Puntos += 4;
+                Equipo.Nombre = "Equipo2";
             }
             else
             {
@@ -435,16 +443,20 @@ namespace Truco.Entidades
                 if (NroMano1 > NroMano2)
                 {
                     Equipo1.Puntos += 4;
+                    Equipo.Nombre = "Equipo1";
                 }
                 else
                 {
                     Equipo2.Puntos += 4;
+                    Equipo.Nombre = "Equipo2";
                 }
             }
+            return Equipo.Nombre;
         }
 
-        public void MetodoRealEnvido()
+        public string MetodoRealEnvido()
         {
+            Equipo Equipo = new Equipo();
             int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
             int idMayorEquipo1 = Equipo1.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo1).ID;//Saco el mayor del equipo 1
 
@@ -454,10 +466,12 @@ namespace Truco.Entidades
             if (mayorEquipo1 > mayorEquipo2)
             {
                 Equipo1.Puntos += 3;
+                Equipo.Nombre = "Equipo1";
             }
             else if (mayorEquipo2 > mayorEquipo1)
             {
                 Equipo2.Puntos += 3;
+                Equipo.Nombre = "Equipo2";
             }
             else
             {
@@ -481,16 +495,20 @@ namespace Truco.Entidades
                 if (NroMano1 > NroMano2)
                 {
                     Equipo1.Puntos += 3;
+                    Equipo.Nombre = "Equipo1";
                 }
                 else
                 {
                     Equipo2.Puntos += 3;
+                    Equipo.Nombre = "Equipo2";
                 }
             }
+            return Equipo.Nombre;
         }
 
-        public void MetodoFaltaEnvido()
+        public string MetodoFaltaEnvido()
         {
+            Equipo Equipo = new Equipo();
             int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
             int idMayorEquipo1 = Equipo1.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo1).ID;//Saco el mayor del equipo 1
 
@@ -500,10 +518,12 @@ namespace Truco.Entidades
             if (mayorEquipo1 > mayorEquipo2)
             {
                 Equipo1.Puntos += 30 - Equipo2.Puntos;
+                Equipo.Nombre = "Equipo1";
             }
             else if (mayorEquipo2 > mayorEquipo1)
             {
                 Equipo2.Puntos += 30 - Equipo1.Puntos;
+                Equipo.Nombre = "Equipo2";
             }
             else
             {
@@ -527,12 +547,15 @@ namespace Truco.Entidades
                 if (NroMano1 > NroMano2)
                 {
                     Equipo1.Puntos += 30 - Equipo2.Puntos;
+                    Equipo.Nombre = "Equipo1";
                 }
                 else
                 {
                     Equipo2.Puntos += 30 - Equipo1.Puntos;
+                    Equipo.Nombre = "Equipo2";
                 }
             }
+            return Equipo.Nombre;
         }
 
         public void JugarMano(int CantJug)

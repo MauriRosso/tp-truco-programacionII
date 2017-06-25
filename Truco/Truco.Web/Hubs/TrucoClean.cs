@@ -218,24 +218,28 @@ namespace Truco.Web.Hubs
 
             if (juego.CuantosCantaronPuntos == 4)
             {
+                string equipoGanador = "";
                 switch (accion)
                 {
                     case "Envido":
-                        juego.MetodoEnvido();
+                        equipoGanador = juego.MetodoEnvido();
                         break;
 
                     case "EnvidoEnvido":
-                        juego.MetodoDobleEnvido();
+                        equipoGanador = juego.MetodoDobleEnvido();
                         break;
 
                     case "RealEnvido":
-                        juego.MetodoRealEnvido();
+                        equipoGanador = juego.MetodoRealEnvido();
                         break;
 
                     case "FaltaEnvido":
-                        juego.MetodoFaltaEnvido();
+                        equipoGanador = juego.MetodoFaltaEnvido();
                         break;
                 }
+                // muestro el equipo que gano el envido, real... ACA.
+                Clients.All.mostrarmensaje("El " + equipoGanador + " ganó el " + accion + " !");
+                Clients.Client(Context.ConnectionId).habilitarMovimientos();
             }
         }
 
@@ -251,7 +255,6 @@ namespace Truco.Web.Hubs
             {
                 case "Envido":
                     Clients.Client(jugador.IdConexion).showmazo();
-                    Clients.Client(jugador.IdConexion).habilitarMovimientos();
                     
                     if (confirmacion) //Contestó "sí"
                     {
@@ -273,7 +276,6 @@ namespace Truco.Web.Hubs
 
                 case "EnvidoEnvido":
                     Clients.Client(proximoJugador.IdConexion).showmazo();
-                    Clients.Client(proximoJugador.IdConexion).habilitarMovimientos();
 
                     if (confirmacion) //Contestó "sí"
                     {
@@ -295,7 +297,6 @@ namespace Truco.Web.Hubs
 
                 case "RealEnvido":
                     Clients.Client(proximoJugador.IdConexion).showmazo();
-                    Clients.Client(proximoJugador.IdConexion).habilitarMovimientos();
 
                     if (confirmacion) //Contestó "sí"
                     {
@@ -317,7 +318,6 @@ namespace Truco.Web.Hubs
 
                 case "FaltaEnvido":
                     Clients.Client(proximoJugador.IdConexion).showmazo();
-                    Clients.Client(proximoJugador.IdConexion).habilitarMovimientos();
 
                     if (confirmacion) //Contestó "sí"
                     {
