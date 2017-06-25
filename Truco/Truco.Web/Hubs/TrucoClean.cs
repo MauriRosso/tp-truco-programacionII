@@ -54,6 +54,12 @@ namespace Truco.Web.Hubs
                     juego.NumeroMano = 1;
                     juego.NumeroRonda = 0;
                     Repartir();
+                    juego.ListaJugadores[0].Turno = true;
+                    Jugador jugadorConTurno = juego.ListaJugadores.Find(x => x.Turno);
+                    Clients.AllExcept(jugadorConTurno.IdConexion).hideEnvidoOptions();
+                    Clients.AllExcept(jugadorConTurno.IdConexion).hideTrucoBotton();
+                    Clients.AllExcept(jugadorConTurno.IdConexion).hideReTrucoBotton();
+                    Clients.AllExcept(jugadorConTurno.IdConexion).hideVale4Botton();
                 }
             }
 
@@ -101,13 +107,6 @@ namespace Truco.Web.Hubs
             {                       
                 item.Turno = false;
             }
-
-            //Clients.Client(item.IdConexion).hideEnvidoOptions();
-            //Clients.Client(item.IdConexion).hideTrucoBotton();
-            //Clients.Client(item.IdConexion).hideReTrucoBotton();
-            //Clients.Client(item.IdConexion).hideVale4Botton();
-
-            //Clients.Client(...).desabilitarMovimientos();
         }
 
         public Jugador ProximoJugador (string idConexion)
@@ -135,182 +134,165 @@ namespace Truco.Web.Hubs
 
         public void cantar(string accion)
         {
-            //MAURI LEE ESTO PRIMERO: Te digo mas o menos lo que tengo pensado hacer:
-            //Funciona asi el metodo cantar y EjecutarAccion, fijate que el metodo cantar tiene un parametro accion y el metodo EjecutarAccion tiene 2 parametros accion y confirmacion, lo que tenemos que hacer es en el metodo
-            //cantar dar los permisos a los jugadores para que canten lo que tienen que cantar y tambien aca adentro se llamaria al metodo EjecutarAccion, invocandolo dentro de la accion del switch, por lo que sabriamos cual es la 
-            //accion que esta ejecutando y guardando en la variable confirmacion que cree si quiere o no esa accion.
-            var jugador = ObtenerJugador(Context.ConnectionId);
+            Jugador jugador = ObtenerJugador(Context.ConnectionId);
+            Jugador proximoJugador = ProximoJugador(jugador.IdConexion);
 
-            foreach (var jugadorSeleccionado in juego.ListaJugadores) //busco el jugador que canta en la lista de jugadores
+            Clients.Others.mostrarmensaje(jugador.Nombre + " cantó " + (accion == "envidoenvido" ? "doble envido" : accion));
+            Clients.Caller.mostrarmensaje("Has cantado " + (accion == "envidoenvido" ? "doble envido" : accion));
+            Clients.Client(jugador.IdConexion).deshabilitarMovimientos();
+            
+            //// Si el juego termino...
+
+            //Clients.Client(jugador.IdConexion).mostrarMensajeFinal(true); // GANADOR
+            //Clients.Client(jugador.IdConexion).mostrarMensajeFinal(false); // PERDEDOR
+            //Clients.All.deshabilitarMovimientos();
+            
+            //// Sino
+            
+            //Clients.All.limpiarpuntos();
+            
+            //// Y mostrar puntos y repartir.
+            
+            switch (accion)
             {
-                if (jugador.IdConexion == jugadorSeleccionado.IdConexion)
-                {
-                    jugadorSeleccionado.Turno = true; //voy a usar la propiedad Turno para hacer que los que tengan True unicamente puedan cantar (en el metodo Repartir setee a todos los jugadores con Turno = false)
-                    if (jugadorSeleccionado.Turno) //me aseguro que tenga la propiedad true por las dudas
-                    {
-                        if (jugadorSeleccionado.Mano == 2 || jugadorSeleccionado.Mano == 1 && juego.NumeroMano == 1) //al fijarse si estos jugadores tienen Mano == 2 || Mano == 1 significa que son los ultimos 2 jugadores de la mano
-                        {                                                                                            // numero 1, y los unicos que pueden cantar el envido
-                            Clients.Others.mostrarmensaje("{0}, canto {1}", jugador.Nombre, accion);
-                            Clients.Caller.mostrarmensaje("Yo cante {0}", accion);  //estas cosas venian con lo que nos dio el profe
-                            Clients.Client(jugador.IdConexion).deshabilitarMovimientos();
+                case "me voy al mazo":
+                    break;
 
-                            //// Si el juego termino...
-                            //Clients.Client(jugador.IdConexion).mostrarMensajeFinal(true); // GANADOR
-                            //Clients.Client(jugador.IdConexion).mostrarMensajeFinal(false); // PERDEDOR
-                            //Clients.All.deshabilitarMovimientos();
+                case "envido":
+                    Clients.All.hidemazo();
+                    //Clients.Client(proximoJugador.IdConexion).
+                    break;
 
-                            //// Sino
-                            //Clients.All.limpiarpuntos();
+                case "envidoenvido":
+                    Clients.All.hidemazo();
+                    break;
 
-                            // Y mostrar puntos y repartir.
+                case "faltaenvido":
+                    Clients.All.hidemazo();
+                    break;
 
-                            //aca arranque de vuelta yo
-                            var confirmacion = true; //Variable en la que voy a guardar si el jugador del equipo contrario acepta o no la accion
-                            switch (accion)
-                            {
-                                case "me voy al mazo":
-                                    if (jugadorSeleccionado.Equipo == "Equipo 1")
-                                    {
-                                        juego.Equipo2.Puntos++;
-                                        if (jugadorSeleccionado.Mano > 1) //Estos If estan hechos porque si un equipo se va al mazo sin darle la posibilidad al otro de cantar el Envido se tiene que sumar 2 puntos
-                                        {                                 //en vez de 1, pero esto solo se haria si la mano = 1 (que ya es una condicion del if de mas arriba) y si el jugador tiene mano > 1 es decir, todos menos el ultimo
-                                            juego.Equipo2.Puntos++;
-                                        }
-                                    }
-                                    if (jugadorSeleccionado.Equipo == "Equipo 2")
-                                    {
-                                        juego.Equipo1.Puntos++;
-                                        if (jugadorSeleccionado.Mano >1 )
-                                        {
-                                            juego.Equipo1.Puntos++;
-                                        }
-                                    }
-                                    break;
-                                case "envido": 
-                                    if (jugadorSeleccionado.Equipo == "Equipo 1") //me fijo si el que canto el envido esta en el equipo 1
-                                    {                                       
-                                        foreach (var jugadorEquipoContrario in juego.Equipo2.ListaJugadores)//busco los jugadores del equipo 2
-                                        {
-                                            var siguienteJugador = ProximoJugador(jugadorEquipoContrario.IdConexion);//elijo el proximo jugador para que decida si acepta o no, ya que si dejariamos que los 2 elijan si quieren o no se armaria un quilombo
-                                           
-                                                //jugadorEquipoContrario(Context.ConnectionId).hideTrucoBotton();//primero mostarle al jugadorEquipoContrario el boton QuieroEnvido o, habilitarle los demas botones de las opciones Envido por si quiere cantar otra cosa
-                                                //jugadorEquipoContrario.showQuieroEnvido(); //aca no encuentro la funcion de js para poder agregar en al variable "confirmacion" el valor de si quiere o no el envido                                                                                    
-                                        }
-                                    }
-                                    if (jugadorSeleccionado.Equipo == "Equipo 2")
-                                    {
+                case "realenvido":
+                    Clients.All.hidemazo();
+                    break;
 
-                                    }
-                                    break;
-                                case "envidoenvido":
-                                    Clients.All.hidemazo();
-                                    Clients.All.hideTrucoBotton();
-                                    Clients.All.hideReTrucoBotton();
-                                    Clients.All.hideVale4Botton();
+                case "truco":
+                    break;
 
-                                    Clients.All.hideEnvidoEnvidoBotton();
-                                    Clients.All.hideEnvidoBotton();
-                                    Clients.Others.showRealEnvidoBotton();
-                                    Clients.Others.showFaltaEnvidoBotton();
-                                    Clients.Caller.hideEnvidoOptions();
-                                    break;
-                                case "faltaenvido":
-                                    Clients.All.hidemazo();
-                                    Clients.All.hideTrucoBotton();
-                                    Clients.All.hideReTrucoBotton();
-                                    Clients.All.hideVale4Botton();
+                case "retruco":
+                    break;
 
-                                    Clients.All.hideEnvidoOptions();
-                                    break;
-                                case "realenvido":
-                                    Clients.All.hidemazo();
-                                    Clients.All.hideTrucoBotton();
-                                    Clients.All.hideReTrucoBotton();
-                                    Clients.All.hideVale4Botton();
-
-                                    Clients.All.hideEnvidoOptions();
-                                    Clients.Others.showFaltaEnvidoBotton();
-                                    break;
-                                case "truco":
-                                    Clients.All.hideEnvidoOptions();
-
-                                    Clients.All.showmazo();
-                                    Clients.Others.showReTrucoBotton();
-                                    break;
-                                case "retruco":
-                                    Clients.All.showmazo();
-                                    Clients.Others.showVale4Botton();
-                                    break;
-                                case "vale4":
-                                    Clients.All.showmazo();
-                                    Clients.All.hideTrucoBotton();
-                                    Clients.All.hideReTrucoBotton();
-                                    Clients.All.hideVale4Botton();
-                                    break;
-                            }
-
-
-                        }
-                    }
-                    else
-                    {
-                        Clients.Caller.hideEnvidoOptions();
-                        switch (accion)
-                        {
-                            case "me voy al mazo":
-                                break;                           
-                            case "truco":
-                                Clients.All.showmazo();
-                                Clients.All.hideTrucoBotton();
-                                Clients.Others.showReTrucoBotton();
-                                break;
-                            case "retruco":
-                                Clients.All.showmazo();
-                                Clients.Others.showVale4Botton();
-                                break;
-                            case "vale4":
-                                Clients.All.showmazo();
-                                Clients.All.hideTrucoBotton();
-                                Clients.All.hideReTrucoBotton();
-                                Clients.All.hideVale4Botton();
-                                break;
-                        }
-                    }               
-                }                
-            }           
+                case "vale4":
+                    break;
+            }
         }
 
-        //public void EjecutarAccion(string accion, bool confirmacion)
-        //{
-        //    // confirmacion == true => Acepto la acción.
-        //    Clients.All.mostrarmensaje("Jugador X acepto/rechazo la ACCION");
+        public void EjecutarAccion(string accion, bool confirmacion)
+        {
+            // confirmacion == true => Acepto la acción.
+            Jugador jugador = ObtenerJugador(Context.ConnectionId);
+            Jugador proximoJugador = ProximoJugador(Context.ConnectionId);
+            Clients.All.mostrarmensaje(jugador.Nombre + (confirmacion ? " aceptó el" : " rechazó el") + accion);
 
-        //    switch (accion)
-        //    {
-        //        case "Envido":
-        //            Clients.All.showmazo();
-        //            Clients.Client(jugador.IdConexion).habilitarMovimientos();
-        //            break;
-        //        case "EnvidoEnvido":
-        //            Clients.All.showmazo();
-        //            Clients.Client(jugador.IdConexion).habilitarMovimientos();
-        //            break;
-        //        case "RealEnvido":
-        //            Clients.All.showmazo();
-        //            Clients.Client(jugador.IdConexion).habilitarMovimientos();
-        //            break;
-        //        case "FaltaEnvido":
-        //            Clients.All.showmazo();
-        //            Clients.Client(jugador.IdConexion).habilitarMovimientos();
-        //            break;
-        //        case "Truco":
-        //            break;
-        //        case "ReTruco":
-        //            break;
-        //        case "Vale4":
-        //            break;
-        //    }
-        //}
+            switch (accion)
+            {
+                case "Envido":
+                    Clients.Client(proximoJugador.IdConexion).showmazo();
+                    Clients.Client(proximoJugador.IdConexion).habilitarMovimientos();
+                    
+                    if (confirmacion) //Contestó "sí"
+                    {
+                        juego.MetodoEnvido();
+                    }
+                    else //Contestó "no"
+                    {
+                        if (jugador.Equipo == juego.Equipo1.Nombre)
+                        {
+                            juego.Equipo2.Puntos += 1;
+                        }
+                        else
+                        {
+                            juego.Equipo1.Puntos += 1;
+                        }
+                    }
+
+                    break;
+
+                case "EnvidoEnvido":
+                    Clients.Client(proximoJugador.IdConexion).showmazo();
+                    Clients.Client(proximoJugador.IdConexion).habilitarMovimientos();
+
+                    if (confirmacion) //Contestó "sí"
+                    {
+                        juego.MetodoDobleEnvido();
+                    }
+                    else //Contestó "no"
+                    {
+                        if (jugador.Equipo == juego.Equipo1.Nombre)
+                        {
+                            juego.Equipo2.Puntos += 2;
+                        }
+                        else
+                        {
+                            juego.Equipo1.Puntos += 2;
+                        }
+                    }
+
+                    break;
+
+                case "RealEnvido":
+                    Clients.Client(proximoJugador.IdConexion).showmazo();
+                    Clients.Client(proximoJugador.IdConexion).habilitarMovimientos();
+
+                    if (confirmacion) //Contestó "sí"
+                    {
+                        juego.MetodoRealEnvido();
+                    }
+                    else //Contestó "no"
+                    {
+                        if (jugador.Equipo == juego.Equipo1.Nombre)
+                        {
+                            juego.Equipo2.Puntos += 1;
+                        }
+                        else
+                        {
+                            juego.Equipo1.Puntos += 1;
+                        }
+                    }
+
+                    break;
+
+                case "FaltaEnvido":
+                    Clients.Client(proximoJugador.IdConexion).showmazo();
+                    Clients.Client(proximoJugador.IdConexion).habilitarMovimientos();
+
+                    if (confirmacion) //Contestó "sí"
+                    {
+                        juego.MetodoFaltaEnvido();
+                    }
+                    else //Contestó "no"
+                    {
+                        if (jugador.Equipo == juego.Equipo1.Nombre)
+                        {
+                            juego.Equipo2.Puntos += 1;
+                        }
+                        else
+                        {
+                            juego.Equipo1.Puntos += 1;
+                        }
+                    }
+
+                    break;
+
+                case "Truco":
+                    break;
+
+                case "ReTruco":
+                    break;
+
+                case "Vale4":
+                    break;
+            }
+        }
 
         public void JugarCarta(string codigoCarta) //ANDA DE 10!!!!! SIGAN ESTE METODO, FALTA CANTAR EL ENVIDO Y TRUCO Y DEMAS. LA RONDA AHORA SIGUE EL SENTIDO LOGICO.
         {

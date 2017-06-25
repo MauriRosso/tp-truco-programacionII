@@ -347,7 +347,7 @@ namespace Truco.Entidades
 				}
 			}
 		}
-		private void MetodoEnvido()
+		public void MetodoEnvido()
 		{
 			int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
 			int idMayorEquipo1 = Equipo1.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo1).ID;//Saco el mayor del equipo 1
@@ -394,7 +394,7 @@ namespace Truco.Entidades
 
 		}
 
-        private void MetodoDobleEnvido()
+        public void MetodoDobleEnvido()
         {
             int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
             int idMayorEquipo1 = Equipo1.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo1).ID;//Saco el mayor del equipo 1
@@ -440,7 +440,7 @@ namespace Truco.Entidades
             }
         }
 
-        private void MetodoRealEnvido()
+        public void MetodoRealEnvido()
         {
             int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
             int idMayorEquipo1 = Equipo1.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo1).ID;//Saco el mayor del equipo 1
@@ -486,7 +486,7 @@ namespace Truco.Entidades
             }
         }
 
-        private void MetodoFaltaEnvido()
+        public void MetodoFaltaEnvido()
         {
             int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
             int idMayorEquipo1 = Equipo1.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo1).ID;//Saco el mayor del equipo 1
