@@ -58,8 +58,8 @@ namespace Truco.Web.Hubs
                     Jugador jugadorConTurno = juego.ListaJugadores.Find(x => x.Turno);
                     Clients.AllExcept(jugadorConTurno.IdConexion).hideEnvidoOptions();
                     Clients.AllExcept(jugadorConTurno.IdConexion).hideTrucoBotton();
-                    Clients.AllExcept(jugadorConTurno.IdConexion).hideReTrucoBotton();
-                    Clients.AllExcept(jugadorConTurno.IdConexion).hideVale4Botton();
+                    Clients.All.hideReTrucoBotton();
+                    Clients.All.hideVale4Botton();
                 }
             }
 
@@ -160,7 +160,7 @@ namespace Truco.Web.Hubs
 
                 case "envido":
                     Clients.All.hidemazo();
-                    //Clients.Client(proximoJugador.IdConexion).
+                    Clients.Client(proximoJugador.IdConexion).showEnvidoOptions();
                     break;
 
                 case "envidoenvido":
@@ -186,22 +186,76 @@ namespace Truco.Web.Hubs
             }
         }
 
+        public void CantarPuntos(string accion, int puntos)
+        {
+            Clients.Client(Context.ConnectionId).hideSeccionesEnvido();
+            juego.CuantosCantaronPuntos++;
+            int posicion = -1;
+            int equipo = 0;
+
+            if (juego.Equipo1.ListaJugadores.Exists(jugador => jugador.IdConexion == Context.ConnectionId))
+            {
+                posicion = juego.Equipo1.ListaJugadores.FindIndex(jugador => jugador.IdConexion == Context.ConnectionId);
+                equipo = 1;
+            }
+            else
+            {
+                posicion = juego.Equipo2.ListaJugadores.FindIndex(jugador => jugador.IdConexion == Context.ConnectionId);
+                equipo = 2;
+            }
+
+            if (juego.ListaJugadores[posicion].PuntosEnvido != puntos)
+            {
+                if (equipo == 1)
+                {
+                    juego.Equipo1.ListaJugadores[posicion].PuntosEnvido = 0;
+                }
+                else
+                {
+                    juego.Equipo2.ListaJugadores[posicion].PuntosEnvido = 0;
+                }
+            }
+
+            if (juego.CuantosCantaronPuntos == 4)
+            {
+                switch (accion)
+                {
+                    case "Envido":
+                        juego.MetodoEnvido();
+                        break;
+
+                    case "EnvidoEnvido":
+                        juego.MetodoDobleEnvido();
+                        break;
+
+                    case "RealEnvido":
+                        juego.MetodoRealEnvido();
+                        break;
+
+                    case "FaltaEnvido":
+                        juego.MetodoFaltaEnvido();
+                        break;
+                }
+            }
+        }
+
         public void EjecutarAccion(string accion, bool confirmacion)
         {
             // confirmacion == true => Acepto la acción.
             Jugador jugador = ObtenerJugador(Context.ConnectionId);
             Jugador proximoJugador = ProximoJugador(Context.ConnectionId);
-            Clients.All.mostrarmensaje(jugador.Nombre + (confirmacion ? " aceptó el" : " rechazó el") + accion);
+            Clients.Others.mostrarmensaje(jugador.Nombre + (confirmacion ? " aceptó el " : " rechazó el ") + accion);
+            Clients.Caller.mostrarmensaje("Has " + (confirmacion ? "aceptado " : "rechazado ") + "el " + (accion == "EnvidoEnvido" ? "Doble envido" : accion));
 
             switch (accion)
             {
                 case "Envido":
-                    Clients.Client(proximoJugador.IdConexion).showmazo();
-                    Clients.Client(proximoJugador.IdConexion).habilitarMovimientos();
+                    Clients.Client(jugador.IdConexion).showmazo();
+                    Clients.Client(jugador.IdConexion).habilitarMovimientos();
                     
                     if (confirmacion) //Contestó "sí"
                     {
-                        juego.MetodoEnvido();
+                        Clients.All.showQuieroEnvido(accion);
                     }
                     else //Contestó "no"
                     {
@@ -223,7 +277,7 @@ namespace Truco.Web.Hubs
 
                     if (confirmacion) //Contestó "sí"
                     {
-                        juego.MetodoDobleEnvido();
+                        Clients.All.showEnvidoEnvidoOptions(accion);
                     }
                     else //Contestó "no"
                     {
@@ -245,7 +299,7 @@ namespace Truco.Web.Hubs
 
                     if (confirmacion) //Contestó "sí"
                     {
-                        juego.MetodoRealEnvido();
+                        Clients.All.showRealEnvidoOptions(accion);
                     }
                     else //Contestó "no"
                     {
@@ -267,7 +321,7 @@ namespace Truco.Web.Hubs
 
                     if (confirmacion) //Contestó "sí"
                     {
-                        juego.MetodoFaltaEnvido();
+                        Clients.All.showFaltaEnvidoOptions(accion);
                     }
                     else //Contestó "no"
                     {
@@ -314,12 +368,18 @@ namespace Truco.Web.Hubs
                     CartaTirada.Mano = juego.NumeroMano;
                     CartaTirada.Carta = carta;
                     juego.ListaCartasJugadas.Add(CartaTirada);//Se cargan las cartas que se van jugando en una lista
+                    item.Turno = false;
+                    Clients.Client(Context.ConnectionId).hideEnvidoOptions();
+                    Clients.Client(Context.ConnectionId).hideTrucoBotton();
+                    Clients.Client(Context.ConnectionId).hideReTrucoBotton();
+                    Clients.Client(Context.ConnectionId).hideVale4Botton();
                 }
             }
             
             juego.CartasJugadas += 1;                                                               
             Clients.All.mostrarCarta(carta, jugador.NombreInterno, juego.NumeroMano);
             Clients.Client(jugador.IdConexion).deshabilitarMovimientos(); //deshabilito el movimiento al jdr que acaba de tirar
+            
 
             if (juego.CartasJugadas == 4) //SE TERMINO UNA MANO.
             {         
@@ -380,6 +440,23 @@ namespace Truco.Web.Hubs
                     if (item.IdConexion == JugadorMayorCarta.IdConexion)
                     {
                         ProximoJugador = item;
+                        item.Turno = true;
+
+                        if (!juego.EnvidoCantado && juego.NumeroMano == 1)
+                        {
+                            Clients.Client(ProximoJugador.IdConexion).showEnvidoBotton();
+                            Clients.Client(ProximoJugador.IdConexion).showEnvidoEnvidoBotton();
+                            Clients.Client(ProximoJugador.IdConexion).showRealEnvidoButton();
+                            Clients.Client(ProximoJugador.IdConexion).showFaltaEnvidoButton();
+                        }
+                        
+                        if (!juego.TrucoCantado)
+                        {
+                            Clients.Client(ProximoJugador.IdConexion).showTrucoBotton();
+                            Clients.Client(ProximoJugador.IdConexion).showReTrucoBotton();
+                            Clients.Client(ProximoJugador.IdConexion).showVale4Botton();
+                        }
+
                         break; //Para no seguir recorriendo la lista sin sentido, ya que encontre lo que buscaba.
                     }
                 }
@@ -402,7 +479,25 @@ namespace Truco.Web.Hubs
                         else
                         {
                             ProximoJugador = juego.ListaJugadores[i + 1];
-                        }                       
+                        }
+
+                        if (!juego.EnvidoCantado && juego.NumeroMano == 1)
+                        {
+                            Clients.Client(ProximoJugador.IdConexion).showEnvidoBotton();
+                            Clients.Client(ProximoJugador.IdConexion).showEnvidoEnvidoBotton();
+                            Clients.Client(ProximoJugador.IdConexion).showRealEnvidoButton();
+                            Clients.Client(ProximoJugador.IdConexion).showFaltaEnvidoButton();
+                        }
+                        
+                        if (!juego.TrucoCantado)
+                        {
+                            Clients.Client(ProximoJugador.IdConexion).showTrucoBotton();
+                            Clients.Client(ProximoJugador.IdConexion).showReTrucoBotton();
+                            Clients.Client(ProximoJugador.IdConexion).showVale4Botton();
+                        }
+
+                        juego.ListaJugadores[i].Turno = true;
+
                         break;
                     }
                 }

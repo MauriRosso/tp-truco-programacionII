@@ -14,6 +14,9 @@ namespace Truco.Entidades
 		public int NumeroRonda { get; set; } // Numero de rondas que se jugaron en la partida
         public int NumeroMano { get; set; }// Numero x de las 3 manos
         public int CartasJugadas { get; set; } // Numero de cartas jugadas en la mano
+        public bool EnvidoCantado { get; set; }
+        public bool TrucoCantado { get; set; }
+        public int CuantosCantaronPuntos = 0;
 
         public List<Jugador> ListaJugadores = new List<Jugador>();
         public List<CartasMesa> ListaCartasJugadas = new List<CartasMesa>();
@@ -349,7 +352,7 @@ namespace Truco.Entidades
 		}
 		public void MetodoEnvido()
 		{
-			int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
+            int mayorEquipo1 = Equipo1.ListaJugadores.Max(x1 => x1.PuntosEnvido);
 			int idMayorEquipo1 = Equipo1.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo1).ID;//Saco el mayor del equipo 1
 
 			int mayorEquipo2 = Equipo2.ListaJugadores.Max(x2 => x2.PuntosEnvido);

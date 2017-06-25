@@ -20,7 +20,6 @@ namespace Truco.Entidades
         public int ID { get; set; }
         public string Equipo { get; set; } //Equipo del jugador
 
-
         public List<Cartas> ListaCartas = new List<Cartas>();
     }
 }

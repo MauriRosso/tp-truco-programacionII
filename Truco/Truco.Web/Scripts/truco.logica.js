@@ -130,6 +130,15 @@ $(function() {
         trucoHub.server.ejecutarAccion("EnvidoEnvido", false);
     });
 
+    /**/
+    trucoHub.client.hideSeccionesEnvido = function() {
+        $("#envidoRegion").hide();
+        $("#envidoEnvidoRegion").hide();
+        $("#faltaEnvidoRegion").hide();
+        $("#quieroEnvidoRegion").hide();
+        $("#realEnvidoRegion").hide();
+    };
+    /**/
 
     $("#bottonQuieroFaltaEnvido").click(function() {
         $("#bottonQuieroFaltaEnvido").hide();
@@ -317,15 +326,15 @@ $(function() {
         $("#bottonRealEnvido").hide();
     };
     trucoHub.client.hideRealEnvidoOptions = function(data) {
-        $("#realEnvidoRegion").hide()
+        $("#realEnvidoRegion").hide();
         $("#bottonFaltaEnvido").hide();
     };
     trucoHub.client.showRealEnvidoOptions = function(data) {
-        $("#realEnvidoRegion").show()
+        $("#realEnvidoRegion").show();
         $("#bottonFaltaEnvido").show();
     };
     trucoHub.client.showEnvidoOptions = function(data) {
-        $("#envidoRegion").show()
+        $("#envidoRegion").show();
         $("#bottonEnvido").hide();
         $("#bottonEnvidoEnvido").show();
         $("#bottonFaltaEnvido").show();
@@ -334,8 +343,14 @@ $(function() {
 
     trucoHub.client.showQuieroEnvido = function(data) {
         lastAction = data;
-        $("#envidoRegion").hide()
+        $("#envidoRegion").hide();
         $("#quieroEnvidoRegion").show();
+    };
+
+    trucoHub.client.hideQuieroEnvido = function (data) {
+        lastAction = data;
+        $("#envidoRegion").hide();
+        $("#quieroEnvidoRegion").hide();
     };
 
     trucoHub.client.hidemazo = function(data) {
