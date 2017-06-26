@@ -94,7 +94,10 @@ namespace Truco.Web.Hubs
             //{
             //    jugador.ListaCartas.Remove(cartas);
             //}
-            juego.PrepararMano(4);
+            //juego.PrepararMano(4);
+            juego.RepartirCartas(4);
+            juego.AsignarMano(juego.NumeroRonda);
+            juego.CalcularPuntosEnvido();
             juego.ListaJugadores.OrderByDescending(x => x.Mano); //Cada vez que reparto, ordeno la lista en base a la mano. PORQUE SE ORDENARIA POR MANO? SI EL REPARTIR SE EJECUTA CADA VEZ QUE TERMINA UN RONDA
             foreach (var item in juego.Equipo1.ListaJugadores)
             {
@@ -277,31 +280,51 @@ namespace Truco.Web.Hubs
 
         public void CantarPuntos(string accion, int puntos)
         {
-            Clients.Client(Context.ConnectionId).hideSeccionesEnvido();
+            var jugador = ObtenerJugador(Context.ConnectionId);
+            Clients.Client(jugador.IdConexion).hideSeccionesEnvido();
             juego.CuantosCantaronPuntos++;
-            int posicion = -1;
-            int equipo = 0;
+            int mayorPuntos = 0;
+            //int equipo = 0;
 
-            if (juego.Equipo1.ListaJugadores.Exists(jugador => jugador.IdConexion == Context.ConnectionId))
-            {
-                posicion = juego.Equipo1.ListaJugadores.FindIndex(jugador => jugador.IdConexion == Context.ConnectionId);
-                equipo = 1;
-            }
-            else
-            {
-                posicion = juego.Equipo2.ListaJugadores.FindIndex(jugador => jugador.IdConexion == Context.ConnectionId);
-                equipo = 2;
-            }
+            //if (juego.Equipo1.ListaJugadores.Exists(jugador => jugador.IdConexion == Context.ConnectionId))
+            //{
+            //    posicion = juego.Equipo1.ListaJugadores.FindIndex(jugador => jugador.IdConexion == Context.ConnectionId);
+            //    equipo = 1;
+            //}
+            //else
+            //{
+            //    posicion = juego.Equipo2.ListaJugadores.FindIndex(jugador => jugador.IdConexion == Context.ConnectionId);
+            //    equipo = 2;
+            //}
 
-            if (juego.ListaJugadores[posicion].PuntosEnvido != puntos)
+
+            //if (juego.ListaJugadores[posicion].PuntosEnvido != puntos)
+            //{
+            //    if (equipo == 1)
+            //    {
+            //        juego.Equipo1.ListaJugadores[posicion].PuntosEnvido = 0;
+            //    }
+            //    else
+            //    {
+            //        juego.Equipo2.ListaJugadores[posicion].PuntosEnvido = 0;
+            //    }
+            //}
+
+            foreach (var jugadorSeleccionado in juego.ListaJugadores)
             {
-                if (equipo == 1)
+                if (jugadorSeleccionado.IdConexion == jugador.IdConexion)
                 {
-                    juego.Equipo1.ListaJugadores[posicion].PuntosEnvido = 0;
-                }
-                else
-                {
-                    juego.Equipo2.ListaJugadores[posicion].PuntosEnvido = 0;
+                    if (jugadorSeleccionado.PuntosEnvido != puntos)
+                    {
+                        jugadorSeleccionado.PuntosEnvido = 0;
+                    }
+                    else
+                    {
+                        if (jugadorSeleccionado.PuntosEnvido > mayorPuntos)
+                        {
+                            mayorPuntos = jugadorSeleccionado.PuntosEnvido;
+                        }
+                    }
                 }
             }
 
@@ -327,8 +350,8 @@ namespace Truco.Web.Hubs
                         break;
                 }
                 // muestro el equipo que gano el envido, real... ACA.
-                Clients.All.mostrarmensaje("El " + equipoGanador + " ganó el " + accion + " !");
-                Clients.Client(Context.ConnectionId).habilitarMovimientos();
+                Clients.All.mostrarmensaje("El " + equipoGanador + " ganó el " + accion + " con " + mayorPuntos + " puntos");
+                //Clients.Client(Context.ConnectionId).habilitarMovimientos();
             }
         }
 
@@ -339,7 +362,13 @@ namespace Truco.Web.Hubs
             Jugador proximoJugador = ProximoJugador(Context.ConnectionId);
             Clients.Others.mostrarmensaje(jugador.Nombre + (confirmacion ? " aceptó el " : " rechazó el ") + accion);
             Clients.Caller.mostrarmensaje("Has " + (confirmacion ? "aceptado " : "rechazado ") + "el " + (accion == "EnvidoEnvido" ? "Doble envido" : accion));
-
+            if (confirmacion)
+            {
+                foreach (var jugadores in juego.ListaJugadores)
+                {
+                    Clients.Client(jugadores.IdConexion).deshabilitarMovimientos();
+                }
+            }
             switch (accion)
             {
                 case "Envido":

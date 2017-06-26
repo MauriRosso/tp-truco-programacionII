@@ -359,7 +359,7 @@ namespace Truco.Entidades
 			int mayorEquipo2 = Equipo2.ListaJugadores.Max(x2 => x2.PuntosEnvido);
 			int idMayorEquipo2 = Equipo2.ListaJugadores.Find(Jug => Jug.PuntosEnvido == mayorEquipo2).ID;//Saco el mayor del equipo 2
 
-			if (mayorEquipo1 > mayorEquipo2)
+            if (mayorEquipo1 > mayorEquipo2)
 			{
 				Equipo1.Puntos += 2;
                 Equipo.Nombre = "Equipo1";
