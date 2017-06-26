@@ -362,6 +362,7 @@ namespace Truco.Web.Hubs
                 }
                 // muestro el equipo que gano el envido, real... ACA.
                 Clients.All.mostrarmensaje("El " + equipoGanador + " ganó el " + accion + " con " + juego.MayorPuntos + " puntos");
+                Clients.All.showTrucoBotton();
                 //Clients.Client(Context.ConnectionId).habilitarMovimientos();
             }
         }
@@ -389,6 +390,7 @@ namespace Truco.Web.Hubs
                     if (confirmacion) //Contestó "sí"
                     {
                         Clients.All.showQuieroEnvido(accion);
+                        Clients.All.hideEnvidoOptions();
                     }
                     else //Contestó "no"
                     {
