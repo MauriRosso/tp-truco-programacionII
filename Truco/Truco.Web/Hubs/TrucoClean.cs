@@ -90,16 +90,12 @@ namespace Truco.Web.Hubs
         {
             Jugador jugador = ObtenerJugador(Context.ConnectionId);
             Clients.All.limpiarTablero();
-            //foreach (Cartas cartas in jugador.ListaCartas)
-            //{
-            //    jugador.ListaCartas.Remove(cartas);
-            //}
-            //juego.PrepararMano(4);
+
             juego.RepartirCartas(4);
             juego.AsignarMano(juego.NumeroRonda);
             juego.CalcularPuntosEnvido();
             juego.MayorPuntos = 0;
-            juego.ListaJugadores.OrderByDescending(x => x.Mano); //Cada vez que reparto, ordeno la lista en base a la mano. PORQUE SE ORDENARIA POR MANO? SI EL REPARTIR SE EJECUTA CADA VEZ QUE TERMINA UN RONDA
+            juego.ListaJugadores.OrderByDescending(x => x.Mano); //Cada vez que reparto, ordeno la lista en base a la mano.
             foreach (var item in juego.Equipo1.ListaJugadores)
             {
                 Clients.Client(item.IdConexion).mostrarCartas(item.ListaCartas);
@@ -162,6 +158,7 @@ namespace Truco.Web.Hubs
             }
             return AnteriorJugador;
         } //Metodo para buscar el proximo jugador de una lista, te lo saque del metodo 
+
         public Jugador ProximoJugador (string idConexion)
         {
             var jugador = ObtenerJugador(idConexion);
@@ -289,32 +286,6 @@ namespace Truco.Web.Hubs
             var jugador = ObtenerJugador(Context.ConnectionId);
             Clients.Client(jugador.IdConexion).hideSeccionesEnvido();
             juego.CuantosCantaronPuntos++;
-            
-            //int equipo = 0;
-
-            //if (juego.Equipo1.ListaJugadores.Exists(jugador => jugador.IdConexion == Context.ConnectionId))
-            //{
-            //    posicion = juego.Equipo1.ListaJugadores.FindIndex(jugador => jugador.IdConexion == Context.ConnectionId);
-            //    equipo = 1;
-            //}
-            //else
-            //{
-            //    posicion = juego.Equipo2.ListaJugadores.FindIndex(jugador => jugador.IdConexion == Context.ConnectionId);
-            //    equipo = 2;
-            //}
-
-
-            //if (juego.ListaJugadores[posicion].PuntosEnvido != puntos)
-            //{
-            //    if (equipo == 1)
-            //    {
-            //        juego.Equipo1.ListaJugadores[posicion].PuntosEnvido = 0;
-            //    }
-            //    else
-            //    {
-            //        juego.Equipo2.ListaJugadores[posicion].PuntosEnvido = 0;
-            //    }
-            //}
 
             foreach (var jugadorSeleccionado in juego.ListaJugadores)
             {
@@ -337,10 +308,25 @@ namespace Truco.Web.Hubs
             if (juego.CuantosCantaronPuntos == 4)
             {
                 string equipoGanador = "";
+                
                 switch (accion)
                 {
                     case "Envido":
                         equipoGanador = juego.MetodoEnvido();
+                        Clients.All.limpiarpuntos();
+                        foreach (var jugadorSeleccionado in juego.ListaJugadores)
+                        {
+                            if (jugadorSeleccionado.Equipo == "Equipo1")
+                            {
+                                Clients.Client(jugadorSeleccionado.IdConexion).mostrarpuntos("Nosotros", juego.Equipo1.Puntos);
+                                Clients.Client(jugadorSeleccionado.IdConexion).mostrarpuntos("Ellos", juego.Equipo2.Puntos);
+                            }
+                            else
+                            {
+                                Clients.Client(jugadorSeleccionado.IdConexion).mostrarpuntos("Nosotros", juego.Equipo2.Puntos);
+                                Clients.Client(jugadorSeleccionado.IdConexion).mostrarpuntos("Ellos", juego.Equipo1.Puntos);
+                            }
+                        }
                         break;
 
                     case "EnvidoEnvido":
@@ -579,12 +565,25 @@ namespace Truco.Web.Hubs
                     juego.Equipo2.ManoGanada++;
                 }
                 if (juego.NumeroMano>=2)
-                {
-
+                {                 
                     if (juego.Equipo1.ManoGanada == 2)
                     {
-                        Clients.All.mostrarmensaje("El equipo 1 gano la ronda");
                         juego.Equipo1.Puntos++;
+                        Clients.All.limpiarpuntos();
+                        Clients.All.mostrarmensaje("El equipo 1 gano la ronda");
+                        foreach (var jugadorSeleccionado in juego.ListaJugadores)
+                        {
+                            if (jugadorSeleccionado.Equipo == "Equipo1")
+                            {
+                                Clients.Client(jugadorSeleccionado.IdConexion).mostrarpuntos("Nosotros", juego.Equipo1.Puntos);
+                                Clients.Client(jugadorSeleccionado.IdConexion).mostrarpuntos("Ellos", juego.Equipo2.Puntos);
+                            }
+                            else
+                            {
+                                Clients.Client(jugadorSeleccionado.IdConexion).mostrarpuntos("Nosotros", juego.Equipo2.Puntos);
+                                Clients.Client(jugadorSeleccionado.IdConexion).mostrarpuntos("Ellos", juego.Equipo1.Puntos);
+                            }
+                        }
                         juego.ListaCartasJugadas.Clear();
                         juego.ListaJugadores[0].ListaCartas.Clear();
                         juego.ListaJugadores[1].ListaCartas.Clear();
@@ -599,8 +598,22 @@ namespace Truco.Web.Hubs
                     }
                     if (juego.Equipo2.ManoGanada == 2)
                     {
-                        Clients.All.mostrarmensaje("El equipo 2 gano la ronda");
                         juego.Equipo2.Puntos++;
+                        Clients.All.limpiarpuntos();
+                        Clients.All.mostrarmensaje("El equipo 2 gano la ronda");
+                        foreach (var jugadorSeleccionado in juego.ListaJugadores)
+                        {
+                            if (jugadorSeleccionado.Equipo == "Equipo1")
+                            {
+                                Clients.Client(jugadorSeleccionado.IdConexion).mostrarpuntos("Nosotros", juego.Equipo1.Puntos);
+                                Clients.Client(jugadorSeleccionado.IdConexion).mostrarpuntos("Ellos", juego.Equipo2.Puntos);
+                            }
+                            else
+                            {
+                                Clients.Client(jugadorSeleccionado.IdConexion).mostrarpuntos("Nosotros", juego.Equipo2.Puntos);
+                                Clients.Client(jugadorSeleccionado.IdConexion).mostrarpuntos("Ellos", juego.Equipo1.Puntos);
+                            }
+                        }
                         juego.ListaCartasJugadas.Clear();
                         juego.ListaJugadores[0].ListaCartas.Clear();
                         juego.ListaJugadores[1].ListaCartas.Clear();

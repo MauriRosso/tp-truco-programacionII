@@ -67,10 +67,6 @@ namespace Truco.Entidades
                 ListaJugadores[1].Mano = 3;
                 ListaJugadores[2].Mano = 2;
                 ListaJugadores[3].Mano = 1;
-                //Equipo1.ListaJugadores[0].Mano = 4;
-                //Equipo2.ListaJugadores[0].Mano = 3;
-                //Equipo1.ListaJugadores[1].Mano = 2;
-                //Equipo2.ListaJugadores[1].Mano = 1;
             }
 			else
 			{
@@ -85,29 +81,6 @@ namespace Truco.Entidades
                         item.Mano = 1;
                     }
                 }
-				//Se incrementa +1 en el valor Mano de cada jugador.
-				//foreach (var item in Equipo1.ListaJugadores)
-				//{
-				//	if (item.Mano + 1 <= 4)
-				//	{
-				//		item.Mano += 1;
-				//	}
-				//	else
-				//	{
-				//		item.Mano = 1;
-				//	}
-				//}
-				//foreach (var item in Equipo2.ListaJugadores)
-				//{
-				//	if (item.Mano + 1 <= 4)
-				//	{
-				//		item.Mano += 1;
-				//	}
-				//	else
-				//	{
-				//		item.Mano = 1;
-				//	}
-				//}
 			}
 			// CONCLUSION: Para comenzar a jugar una mano, tenemos que preguntar que jugador tiene un valor "4" en su propiedad "Mano" (osea, el valor mas alto que se puede tener).
 		}
@@ -367,6 +340,7 @@ namespace Truco.Entidades
 				}
 			}
 		}
+
 		public string MetodoEnvido()
 		{
             Equipo Equipo = new Equipo();
@@ -380,6 +354,7 @@ namespace Truco.Entidades
 			{
 				Equipo1.Puntos += 2;
                 Equipo.Nombre = "Equipo1";
+
 			}
 			else if (mayorEquipo2 > mayorEquipo1)
 			{
