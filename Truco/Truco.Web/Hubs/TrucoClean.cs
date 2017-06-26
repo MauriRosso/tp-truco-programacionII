@@ -131,6 +131,28 @@ namespace Truco.Web.Hubs
             }
             return ProximoJugador;
         } //Metodo para buscar el proximo jugador de una lista, te lo saque del metodo JugarCartas, creo que funciona no lo lleuge a probar
+        public Jugador AnteriorJugador(string idConexion)
+        {
+            var jugador = ObtenerJugador(idConexion);
+            Jugador AnteriorJugador = null;
+
+            for (int i = 0; i < juego.ListaJugadores.Count(); i++)
+            {
+                if (jugador.IdConexion == juego.ListaJugadores[i].IdConexion) //Encuentro al proximo jugador
+                {
+                    if (i - 1 < 0) // Garantizo que la lista sea circular, es decir que no se desborde.
+                    {
+                        AnteriorJugador = juego.ListaJugadores[3];
+                    }
+                    else
+                    {
+                        AnteriorJugador = juego.ListaJugadores[i - 1];
+                    }
+                    break;
+                }
+            }
+            return AnteriorJugador;
+        } //Metodo para buscar el proximo jugador de una lista, te lo saque del metodo JugarCartas, creo que funciona no lo lleuge a probar
 
         public void cantar(string accion)
         {
@@ -237,8 +259,8 @@ namespace Truco.Web.Hubs
                         equipoGanador = juego.MetodoFaltaEnvido();
                         break;
                 }
-                // muestro el equipo que gano el envido, real... ACA.
                 Clients.All.mostrarmensaje("El " + equipoGanador + " ganó el " + accion + " !");
+                //Actualizar cartel de puntos.
                 Clients.Client(Context.ConnectionId).habilitarMovimientos();
             }
         }
@@ -345,7 +367,10 @@ namespace Truco.Web.Hubs
 
                 case "Vale4":
                     break;
+
             }
+            Jugador JugadorAnterior = AnteriorJugador(Context.ConnectionId);
+            Clients.Client(JugadorAnterior.IdConexion).habilitarMovimientos();
         }
 
         public void JugarCarta(string codigoCarta) //ANDA DE 10!!!!! SIGAN ESTE METODO, FALTA CANTAR EL ENVIDO Y TRUCO Y DEMAS. LA RONDA AHORA SIGUE EL SENTIDO LOGICO.
