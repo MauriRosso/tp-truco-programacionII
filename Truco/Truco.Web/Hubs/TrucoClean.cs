@@ -131,6 +131,28 @@ namespace Truco.Web.Hubs
             }           
         }
 
+        public Jugador AnteriorJugador(string idConexion)
+        {
+            var jugador = ObtenerJugador(idConexion);
+            Jugador AnteriorJugador = null;
+
+            for (int i = 0; i < juego.ListaJugadores.Count(); i++)
+            {
+                if (jugador.IdConexion == juego.ListaJugadores[i].IdConexion) //Encuentro al proximo jugador
+                {
+                    if (i - 1 < 0) // Garantizo que la lista sea circular, es decir que no se desborde.
+                    {
+                        AnteriorJugador = juego.ListaJugadores[3];
+                    }
+                    else
+                    {
+                        AnteriorJugador = juego.ListaJugadores[i - 1];
+                    }
+                    break;
+                }
+            }
+            return AnteriorJugador;
+        } //Metodo para buscar el proximo jugador de una lista, te lo saque del metodo 
         public Jugador ProximoJugador (string idConexion)
         {
             var jugador = ObtenerJugador(idConexion);
@@ -413,8 +435,10 @@ namespace Truco.Web.Hubs
                 case "Vale4":
                     break;
             }
+            Jugador JugadorAnterior = AnteriorJugador(Context.ConnectionId);
+            Clients.Client(JugadorAnterior.IdConexion).habilitarMovimientos();
         }
-
+       
         public void JugarCarta(string codigoCarta) //ANDA DE 10!!!!! SIGAN ESTE METODO, FALTA CANTAR EL ENVIDO Y TRUCO Y DEMAS. LA RONDA AHORA SIGUE EL SENTIDO LOGICO.
         {
             // 1- Ejecutar el codigo seteando el numero de mano/ronda correspondiente.
@@ -521,16 +545,27 @@ namespace Truco.Web.Hubs
                 }
                 if (juego.NumeroMano>=2)
                 {
+
                     if (juego.Equipo1.ManoGanada == 2)
                     {
                         Clients.All.mostrarmensaje("El equipo 1 gano la ronda");
                         juego.Equipo1.Puntos++;
+                        juego.ListaCartasJugadas.Clear();
+                        juego.ListaJugadores[0].ListaCartas.Clear();
+                        juego.ListaJugadores[1].ListaCartas.Clear();
+                        juego.ListaJugadores[2].ListaCartas.Clear();
+                        juego.ListaJugadores[3].ListaCartas.Clear();
                         Repartir();
                     }
                     if (juego.Equipo2.ManoGanada == 2)
                     {
                         Clients.All.mostrarmensaje("El equipo 2 gano la ronda");
                         juego.Equipo2.Puntos++;
+                        juego.ListaCartasJugadas.Clear();
+                        juego.ListaJugadores[0].ListaCartas.Clear();
+                        juego.ListaJugadores[1].ListaCartas.Clear();
+                        juego.ListaJugadores[2].ListaCartas.Clear();
+                        juego.ListaJugadores[3].ListaCartas.Clear();
                         Repartir();
                     }
                 }
