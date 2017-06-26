@@ -10,7 +10,7 @@ namespace Truco.Web.Hubs
 {
     [HubName("truco")]
     public class Truco : Hub
-    {       
+    {
         public static Partida juego = new Partida();
 
         public void AgregarJugador(string nombre)
@@ -73,7 +73,7 @@ namespace Truco.Web.Hubs
 
         }
 
-        private Jugador ObtenerJugador(string idConexion)   
+        private Jugador ObtenerJugador(string idConexion)
         {
             Jugador JugadorObtenido = null;
             foreach (var Jug in juego.ListaJugadores)
@@ -82,7 +82,7 @@ namespace Truco.Web.Hubs
                 {
                     JugadorObtenido = Jug;
                 }
-            }       
+            }
             return JugadorObtenido;
         }
 
@@ -114,8 +114,9 @@ namespace Truco.Web.Hubs
             }
 
             foreach (var item in juego.ListaJugadores)
-            {                       
+            {
                 item.Turno = false;
+                item.CantoTruco = false;
             }
 
             foreach (var jugadorSeleccionado in juego.ListaJugadores)
@@ -133,7 +134,7 @@ namespace Truco.Web.Hubs
                 {
                     Clients.Client(jugadorSeleccionado.IdConexion).hideEnvidoOptions();
                 }
-            }           
+            }
         }
 
         public Jugador AnteriorJugador(string idConexion)
@@ -159,7 +160,7 @@ namespace Truco.Web.Hubs
             return AnteriorJugador;
         } //Metodo para buscar el proximo jugador de una lista, te lo saque del metodo 
 
-        public Jugador ProximoJugador (string idConexion)
+        public Jugador ProximoJugador(string idConexion)
         {
             var jugador = ObtenerJugador(idConexion);
             Jugador ProximoJugador = null;
@@ -186,6 +187,7 @@ namespace Truco.Web.Hubs
         {
             Jugador jugador = ObtenerJugador(Context.ConnectionId);
             Jugador proximoJugador = ProximoJugador(jugador.IdConexion);
+            //Jugador jugadorCantoTruco = ObtenerJugador(Context.ConnectionId);
             jugador.Turno = true;
             proximoJugador.Turno = true;
             if (jugador.Turno)
@@ -194,11 +196,24 @@ namespace Truco.Web.Hubs
                 Clients.Caller.mostrarmensaje("Has cantado " + (accion == "envidoenvido" ? "doble envido" : accion));
                 Clients.Client(jugador.IdConexion).deshabilitarMovimientos();
 
-                //// Si el juego termino...
-
-                //Clients.Client(jugador.IdConexion).mostrarMensajeFinal(true); // GANADOR
-                //Clients.Client(jugador.IdConexion).mostrarMensajeFinal(false); // PERDEDOR
-                //Clients.All.deshabilitarMovimientos();
+                if (juego.Equipo1.Puntos >= 30 || juego.Equipo2.Puntos >= 30)
+                {
+                    if (juego.Equipo1.Puntos >= 30)
+                    {
+                        Clients.Client(juego.Equipo1.ListaJugadores[0].IdConexion).mostrarMensajeFinal(true);
+                        Clients.Client(juego.Equipo1.ListaJugadores[1].IdConexion).mostrarMensajeFinal(true);
+                        Clients.Client(juego.Equipo2.ListaJugadores[0].IdConexion).mostrarMensajeFinal(false);
+                        Clients.Client(juego.Equipo2.ListaJugadores[1].IdConexion).mostrarMensajeFinal(false);
+                    }
+                    else
+                    {
+                        Clients.Client(juego.Equipo2.ListaJugadores[0].IdConexion).mostrarMensajeFinal(true);
+                        Clients.Client(juego.Equipo2.ListaJugadores[1].IdConexion).mostrarMensajeFinal(true);
+                        Clients.Client(juego.Equipo1.ListaJugadores[0].IdConexion).mostrarMensajeFinal(false);
+                        Clients.Client(juego.Equipo1.ListaJugadores[1].IdConexion).mostrarMensajeFinal(false);
+                    }
+                    Clients.All.deshabilitarMovimientos();
+                }
 
                 //// Sino
 
@@ -246,19 +261,23 @@ namespace Truco.Web.Hubs
                         Clients.Client(proximoJugador.IdConexion).showTrucoOptions();
                         Clients.Client(jugador.IdConexion).hideTrucoBotton();
                         Clients.Client(proximoJugador.IdConexion).hideTrucoBotton();
+                        juego.TrucoCantado = true;
+                        jugador.CantoTruco = true;
                         break;
 
                     case "retruco":
                         Clients.Client(proximoJugador.IdConexion).showReTrucoOptions();
                         Clients.Client(jugador.IdConexion).hideReTrucoBotton();
                         Clients.Client(proximoJugador.IdConexion).hideReTrucoBotton();
+                        juego.TrucoCantado = true;
                         break;
 
                     case "vale4":
                         Clients.Client(proximoJugador.IdConexion).showVale4Options();
                         Clients.Client(jugador.IdConexion).hideVale4Botton();
+                        juego.TrucoCantado = true;
                         break;
-                }           
+                }
             }
             else
             {
@@ -280,7 +299,7 @@ namespace Truco.Web.Hubs
                 }
             }
         }
-        
+
         public void CantarPuntos(string accion, int puntos)
         {
             var jugador = ObtenerJugador(Context.ConnectionId);
@@ -308,7 +327,7 @@ namespace Truco.Web.Hubs
             if (juego.CuantosCantaronPuntos == 4)
             {
                 string equipoGanador = "";
-                
+
                 switch (accion)
                 {
                     case "Envido":
@@ -351,6 +370,7 @@ namespace Truco.Web.Hubs
         {
             // confirmacion == true => Acepto la acción.
             Jugador jugador = ObtenerJugador(Context.ConnectionId);
+            Jugador JugadorAnterior = AnteriorJugador(Context.ConnectionId);
             Jugador proximoJugador = ProximoJugador(Context.ConnectionId);
             Clients.Others.mostrarmensaje(jugador.Nombre + (confirmacion ? " aceptó el " : " rechazó el ") + accion);
             Clients.Caller.mostrarmensaje("Has " + (confirmacion ? "aceptado " : "rechazado ") + "el " + (accion == "EnvidoEnvido" ? "Doble envido" : accion));
@@ -365,7 +385,7 @@ namespace Truco.Web.Hubs
             {
                 case "Envido":
                     Clients.Client(jugador.IdConexion).showmazo();
-                    
+
                     if (confirmacion) //Contestó "sí"
                     {
                         Clients.All.showQuieroEnvido(accion);
@@ -448,24 +468,86 @@ namespace Truco.Web.Hubs
                     break;
 
                 case "Truco":
+                    Clients.Client(jugador.IdConexion).showmazo();
+                    Clients.Client(jugador.IdConexion).hideTrucoOptions();
+
+                    if (confirmacion)
+                    {
+                        juego.NivelTrucoCantado = 1;
+                    }
+                    else
+                    {
+                        string equipoQuePerdio = juego.ListaJugadores.Find(x => x.IdConexion == Context.ConnectionId).Equipo;
+                        if (equipoQuePerdio == "Equipo1")
+                        {
+                            juego.Equipo2.Puntos++;
+                        }
+                        else
+                        {
+                            juego.Equipo1.Puntos++;
+
+                        }
+                    }
+
                     break;
 
                 case "ReTruco":
+                    Clients.Client(jugador.IdConexion).showmazo();
+                    Clients.Client(jugador.IdConexion).hideReTrucoOptions();
+
+                    if (confirmacion)
+                    {
+                        juego.NivelTrucoCantado = 2;
+                    }
+                    else
+                    {
+                        string equipoQuePerdio = juego.ListaJugadores.Find(x => x.IdConexion == Context.ConnectionId).Equipo;
+                        if (equipoQuePerdio == "Equipo1")
+                        {
+                            juego.Equipo2.Puntos += 2;
+                        }
+                        else
+                        {
+                            juego.Equipo1.Puntos += 2;
+
+                        }
+                    }
+                    Clients.Client(JugadorAnterior.IdConexion).habilitarMovimientos();
                     break;
 
                 case "Vale4":
+                    Clients.Client(jugador.IdConexion).showmazo();
+                    Clients.Client(jugador.IdConexion).hideVale4Options();
+
+                    if (confirmacion)
+                    {
+                        juego.NivelTrucoCantado = 3;
+                    }
+                    else
+                    {
+                        string equipoQuePerdio = juego.ListaJugadores.Find(x => x.IdConexion == Context.ConnectionId).Equipo;
+                        if (equipoQuePerdio == "Equipo1")
+                        {
+                            juego.Equipo2.Puntos += 3;
+                        }
+                        else
+                        {
+                            juego.Equipo1.Puntos += 3;
+
+                        }
+                    }
+
                     break;
-            }
-            Jugador JugadorAnterior = AnteriorJugador(Context.ConnectionId);
+            }           
             Clients.Client(JugadorAnterior.IdConexion).habilitarMovimientos();
         }
-       
+
         public void JugarCarta(string codigoCarta) //ANDA DE 10!!!!! SIGAN ESTE METODO, FALTA CANTAR EL ENVIDO Y TRUCO Y DEMAS. LA RONDA AHORA SIGUE EL SENTIDO LOGICO.
         {
             // 1- Ejecutar el codigo seteando el numero de mano/ronda correspondiente.
             // 2- Habilitar los movimientos del siguiente jugador y deshabilitar el actual.
             // 3- Habilitar acciones correspondientes.
-
+            
             var jugador = ObtenerJugador(Context.ConnectionId);
             var carta = jugador.ListaCartas.Where(x => x.Codigo == codigoCarta).Single();
 
@@ -487,14 +569,14 @@ namespace Truco.Web.Hubs
                     Clients.Client(Context.ConnectionId).hideVale4Botton();
                 }
             }
-            
-            juego.CartasJugadas += 1;                                                               
+
+            juego.CartasJugadas += 1;
             Clients.All.mostrarCarta(carta, jugador.NombreInterno, juego.NumeroMano);
             Clients.Client(jugador.IdConexion).deshabilitarMovimientos(); //deshabilito el movimiento al jdr que acaba de tirar
-            
+
 
             if (juego.CartasJugadas == 4) //SE TERMINO UNA MANO.
-            {         
+            {
                 Cartas mayCarta = null;
                 string mayEquipoCarta = "";
                 Jugador JugadorMayorCarta = null;
@@ -511,12 +593,12 @@ namespace Truco.Web.Hubs
                             banderaPrimerCarta = true;
                             mayCarta = item.Carta;
                             mayEquipoCarta = item.Jugador.Equipo;
-                            JugadorMayorCarta = item.Jugador;                            
+                            JugadorMayorCarta = item.Jugador;
                         }
                         else
                         {
                             if (item.Carta.Valor > mayCarta.Valor)
-                            {                               
+                            {
                                 mayCarta = item.Carta;
                                 mayEquipoCarta = item.Jugador.Equipo;
                                 JugadorMayorCarta = item.Jugador;
@@ -541,11 +623,11 @@ namespace Truco.Web.Hubs
                                         {
                                             empateNoContinua = true;
                                         }
-                                    }                                 
+                                    }
                                 }
                             }
                         }
-                    }                   
+                    }
                 }
                 foreach (var item in juego.ListaJugadores)
                 {
@@ -564,11 +646,39 @@ namespace Truco.Web.Hubs
                 {
                     juego.Equipo2.ManoGanada++;
                 }
-                if (juego.NumeroMano>=2)
-                {                 
+                if (juego.NumeroMano >= 2)
+                {
                     if (juego.Equipo1.ManoGanada == 2)
                     {
-                        juego.Equipo1.Puntos++;
+                        switch (juego.NivelTrucoCantado)
+                        {
+                            case 1: //Truco
+                                juego.Equipo1.Puntos += 2;
+                                break;
+                            case 2: //Truco
+                                juego.Equipo1.Puntos += 3;
+                                break;
+                            case 3: //Truco
+                                juego.Equipo1.Puntos += 4;
+                                break;
+                            case 0: //no se canto truco
+                                if (juego.TrucoCantado == false)
+                                {
+                                    juego.Equipo1.Puntos++;
+                                }                      
+                                break;
+                        }
+                        juego.TrucoCantado = false;
+                        if (juego.Equipo1.Puntos >= 30)
+                        {
+                            juego.JuegoTerminado = true;
+                            Clients.Client(juego.ListaJugadores[0].IdConexion).mostrarMensajeFinal(true);
+                            Clients.Client(juego.ListaJugadores[2].IdConexion).mostrarMensajeFinal(true);
+                            Clients.Client(juego.ListaJugadores[1].IdConexion).mostrarMensajeFinal(false);
+                            Clients.Client(juego.ListaJugadores[3].IdConexion).mostrarMensajeFinal(false);
+
+                            Clients.All.deshabilitarMovimientos();
+                        }
                         Clients.All.limpiarpuntos();
                         Clients.All.mostrarmensaje("El equipo 1 gano la ronda");
                         foreach (var jugadorSeleccionado in juego.ListaJugadores)
@@ -584,21 +694,52 @@ namespace Truco.Web.Hubs
                                 Clients.Client(jugadorSeleccionado.IdConexion).mostrarpuntos("Ellos", juego.Equipo1.Puntos);
                             }
                         }
-                        juego.ListaCartasJugadas.Clear();
-                        juego.ListaJugadores[0].ListaCartas.Clear();
-                        juego.ListaJugadores[1].ListaCartas.Clear();
-                        juego.ListaJugadores[2].ListaCartas.Clear();
-                        juego.ListaJugadores[3].ListaCartas.Clear();
-                        juego.Equipo1.ManoGanada = 0;
-                        juego.NumeroMano = 1;
-                        juego.CartasJugadas = 0;
-                        juego.TerminoRonda = true;
-                        juego.NumeroRonda += 1;
-                        Repartir();
+                        if (juego.JuegoTerminado == false)
+                        {
+                            juego.ListaCartasJugadas.Clear();
+                            juego.ListaJugadores[0].ListaCartas.Clear();
+                            juego.ListaJugadores[1].ListaCartas.Clear();
+                            juego.ListaJugadores[2].ListaCartas.Clear();
+                            juego.ListaJugadores[3].ListaCartas.Clear();
+                            juego.Equipo1.ManoGanada = 0;
+                            juego.NumeroMano = 1;
+                            juego.CartasJugadas = 0;
+                            juego.TerminoRonda = true;
+                            juego.NumeroRonda += 1;
+                            Repartir();
+                        }
                     }
                     if (juego.Equipo2.ManoGanada == 2)
                     {
-                        juego.Equipo2.Puntos++;
+                        switch (juego.NivelTrucoCantado)
+                        {
+                            case 1: //Truco
+                                juego.Equipo2.Puntos += 2;
+                                break;
+                            case 2: //Truco
+                                juego.Equipo2.Puntos += 3;
+                                break;
+                            case 3: //Truco
+                                juego.Equipo2.Puntos += 4;
+                                break;
+                            case 0: //no se canto truco
+                                if (juego.TrucoCantado == false)
+                                {
+                                    juego.Equipo2.Puntos++;
+                                }
+                                break;
+                        }
+                        juego.TrucoCantado = false;
+                        if (juego.Equipo2.Puntos >= 30)
+                        {
+                            juego.JuegoTerminado = true;
+                            Clients.Client(juego.ListaJugadores[0].IdConexion).mostrarMensajeFinal(false);
+                            Clients.Client(juego.ListaJugadores[2].IdConexion).mostrarMensajeFinal(false);
+                            Clients.Client(juego.ListaJugadores[1].IdConexion).mostrarMensajeFinal(true);
+                            Clients.Client(juego.ListaJugadores[3].IdConexion).mostrarMensajeFinal(true);
+
+                            Clients.All.deshabilitarMovimientos();
+                        }
                         Clients.All.limpiarpuntos();
                         Clients.All.mostrarmensaje("El equipo 2 gano la ronda");
                         foreach (var jugadorSeleccionado in juego.ListaJugadores)
@@ -614,17 +755,20 @@ namespace Truco.Web.Hubs
                                 Clients.Client(jugadorSeleccionado.IdConexion).mostrarpuntos("Ellos", juego.Equipo1.Puntos);
                             }
                         }
-                        juego.ListaCartasJugadas.Clear();
-                        juego.ListaJugadores[0].ListaCartas.Clear();
-                        juego.ListaJugadores[1].ListaCartas.Clear();
-                        juego.ListaJugadores[2].ListaCartas.Clear();
-                        juego.ListaJugadores[3].ListaCartas.Clear();
-                        juego.Equipo2.ManoGanada = 0;
-                        juego.NumeroMano = 1;
-                        juego.CartasJugadas = 0;
-                        juego.TerminoRonda = true;
-                        juego.NumeroRonda += 1;
-                        Repartir();
+                        if (juego.JuegoTerminado == false)
+                        {
+                            juego.ListaCartasJugadas.Clear();
+                            juego.ListaJugadores[0].ListaCartas.Clear();
+                            juego.ListaJugadores[1].ListaCartas.Clear();
+                            juego.ListaJugadores[2].ListaCartas.Clear();
+                            juego.ListaJugadores[3].ListaCartas.Clear();
+                            juego.Equipo2.ManoGanada = 0;
+                            juego.NumeroMano = 1;
+                            juego.CartasJugadas = 0;
+                            juego.TerminoRonda = true;
+                            juego.NumeroRonda += 1;
+                            Repartir();
+                        }
                     }
                 }
                 if (juego.TerminoRonda == false)
@@ -635,7 +779,7 @@ namespace Truco.Web.Hubs
                 }
                 juego.TerminoRonda = false;
 
-                
+
             }
             else //Todavia queda alguien por jugar en la mano.
             {
@@ -658,7 +802,7 @@ namespace Truco.Web.Hubs
                     }
                 }
                 Clients.Client(ProximoJugador.IdConexion).habilitarMovimientos();
-            }             
-        }  
+            }
+        }
     }
 }

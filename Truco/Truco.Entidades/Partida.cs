@@ -18,8 +18,10 @@ namespace Truco.Entidades
         public bool TrucoCantado { get; set; }
         public bool TerminoRonda { get; set; }
         public int MayorPuntos { get; set; }
+        public bool JuegoTerminado { get; set; }
+        public int NivelTrucoCantado = 0;
         public int CuantosCantaronPuntos = 0;
-
+        public string JugadorCantoTruco { get; set; }
         public List<Jugador> ListaJugadores = new List<Jugador>();
         public List<CartasMesa> ListaCartasJugadas = new List<CartasMesa>();
         public Equipo Equipo1 = new Equipo();
