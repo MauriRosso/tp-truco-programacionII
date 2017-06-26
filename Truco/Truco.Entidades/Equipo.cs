@@ -10,6 +10,7 @@ namespace Truco.Entidades
     {
         public string Nombre { get; set; }
         public int Puntos { get; set; }
+        public int ManoGanada { get; set; }
         public List<Jugador> ListaJugadores = new List<Jugador>();
     }
 }
