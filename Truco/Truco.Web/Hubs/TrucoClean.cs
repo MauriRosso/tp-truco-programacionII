@@ -109,8 +109,13 @@ namespace Truco.Web.Hubs
             {
                 Clients.Client(item.IdConexion).mostrarCartas(item.ListaCartas);
             }
-
-            Clients.Client(juego.ListaJugadores[0].IdConexion).habilitarMovimientos(); //Habilito el mov. del primer jugador para comenzar a jugar
+            foreach (var item in juego.ListaJugadores)
+            {
+                if (item.Mano == 4)
+                {
+                    Clients.Client(item.IdConexion).habilitarMovimientos(); //Habilito el mov. del jug con mayor mano para empezar a jugar. 
+                }
+            }
 
             foreach (var item in juego.ListaJugadores)
             {                       
@@ -589,6 +594,7 @@ namespace Truco.Web.Hubs
                         juego.NumeroMano = 1;
                         juego.CartasJugadas = 0;
                         juego.TerminoRonda = true;
+                        juego.NumeroRonda += 1;
                         Repartir();
                     }
                     if (juego.Equipo2.ManoGanada == 2)
@@ -604,6 +610,7 @@ namespace Truco.Web.Hubs
                         juego.NumeroMano = 1;
                         juego.CartasJugadas = 0;
                         juego.TerminoRonda = true;
+                        juego.NumeroRonda += 1;
                         Repartir();
                     }
                 }

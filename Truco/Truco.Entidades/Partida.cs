@@ -63,36 +63,51 @@ namespace Truco.Entidades
 
 			if (NroRonda == 0) //Si es la primera mano del juego
 			{
-				Equipo1.ListaJugadores[0].Mano = 4;
-				Equipo2.ListaJugadores[0].Mano = 3;
-				Equipo1.ListaJugadores[1].Mano = 2;
-				Equipo2.ListaJugadores[1].Mano = 1;
-			}
+                ListaJugadores[0].Mano = 4;
+                ListaJugadores[1].Mano = 3;
+                ListaJugadores[2].Mano = 2;
+                ListaJugadores[3].Mano = 1;
+                //Equipo1.ListaJugadores[0].Mano = 4;
+                //Equipo2.ListaJugadores[0].Mano = 3;
+                //Equipo1.ListaJugadores[1].Mano = 2;
+                //Equipo2.ListaJugadores[1].Mano = 1;
+            }
 			else
 			{
+                foreach (var item in ListaJugadores)
+                {
+                    if (item.Mano + 1 <= 4)
+                    {
+                        item.Mano += 1;
+                    }
+                    else
+                    {
+                        item.Mano = 1;
+                    }
+                }
 				//Se incrementa +1 en el valor Mano de cada jugador.
-				foreach (var item in Equipo1.ListaJugadores)
-				{
-					if (item.Mano + 1 <= 4)
-					{
-						item.Mano += 1;
-					}
-					else
-					{
-						item.Mano = 1;
-					}
-				}
-				foreach (var item in Equipo2.ListaJugadores)
-				{
-					if (item.Mano + 1 <= 4)
-					{
-						item.Mano += 1;
-					}
-					else
-					{
-						item.Mano = 1;
-					}
-				}
+				//foreach (var item in Equipo1.ListaJugadores)
+				//{
+				//	if (item.Mano + 1 <= 4)
+				//	{
+				//		item.Mano += 1;
+				//	}
+				//	else
+				//	{
+				//		item.Mano = 1;
+				//	}
+				//}
+				//foreach (var item in Equipo2.ListaJugadores)
+				//{
+				//	if (item.Mano + 1 <= 4)
+				//	{
+				//		item.Mano += 1;
+				//	}
+				//	else
+				//	{
+				//		item.Mano = 1;
+				//	}
+				//}
 			}
 			// CONCLUSION: Para comenzar a jugar una mano, tenemos que preguntar que jugador tiene un valor "4" en su propiedad "Mano" (osea, el valor mas alto que se puede tener).
 		}
