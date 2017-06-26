@@ -98,6 +98,7 @@ namespace Truco.Web.Hubs
             juego.RepartirCartas(4);
             juego.AsignarMano(juego.NumeroRonda);
             juego.CalcularPuntosEnvido();
+            juego.MayorPuntos = 0;
             juego.ListaJugadores.OrderByDescending(x => x.Mano); //Cada vez que reparto, ordeno la lista en base a la mano. PORQUE SE ORDENARIA POR MANO? SI EL REPARTIR SE EJECUTA CADA VEZ QUE TERMINA UN RONDA
             foreach (var item in juego.Equipo1.ListaJugadores)
             {
@@ -277,13 +278,13 @@ namespace Truco.Web.Hubs
                 }
             }
         }
-
+        
         public void CantarPuntos(string accion, int puntos)
         {
             var jugador = ObtenerJugador(Context.ConnectionId);
             Clients.Client(jugador.IdConexion).hideSeccionesEnvido();
             juego.CuantosCantaronPuntos++;
-            int mayorPuntos = 0;
+            
             //int equipo = 0;
 
             //if (juego.Equipo1.ListaJugadores.Exists(jugador => jugador.IdConexion == Context.ConnectionId))
@@ -320,9 +321,9 @@ namespace Truco.Web.Hubs
                     }
                     else
                     {
-                        if (jugadorSeleccionado.PuntosEnvido > mayorPuntos)
+                        if (jugadorSeleccionado.PuntosEnvido > juego.MayorPuntos)
                         {
-                            mayorPuntos = jugadorSeleccionado.PuntosEnvido;
+                            juego.MayorPuntos = jugadorSeleccionado.PuntosEnvido;
                         }
                     }
                 }
@@ -350,7 +351,7 @@ namespace Truco.Web.Hubs
                         break;
                 }
                 // muestro el equipo que gano el envido, real... ACA.
-                Clients.All.mostrarmensaje("El " + equipoGanador + " ganó el " + accion + " con " + mayorPuntos + " puntos");
+                Clients.All.mostrarmensaje("El " + equipoGanador + " ganó el " + accion + " con " + juego.MayorPuntos + " puntos");
                 //Clients.Client(Context.ConnectionId).habilitarMovimientos();
             }
         }
@@ -584,6 +585,10 @@ namespace Truco.Web.Hubs
                         juego.ListaJugadores[1].ListaCartas.Clear();
                         juego.ListaJugadores[2].ListaCartas.Clear();
                         juego.ListaJugadores[3].ListaCartas.Clear();
+                        juego.Equipo1.ManoGanada = 0;
+                        juego.NumeroMano = 1;
+                        juego.CartasJugadas = 0;
+                        juego.TerminoRonda = true;
                         Repartir();
                     }
                     if (juego.Equipo2.ManoGanada == 2)
@@ -595,12 +600,20 @@ namespace Truco.Web.Hubs
                         juego.ListaJugadores[1].ListaCartas.Clear();
                         juego.ListaJugadores[2].ListaCartas.Clear();
                         juego.ListaJugadores[3].ListaCartas.Clear();
+                        juego.Equipo2.ManoGanada = 0;
+                        juego.NumeroMano = 1;
+                        juego.CartasJugadas = 0;
+                        juego.TerminoRonda = true;
                         Repartir();
                     }
                 }
-                Clients.Client(ProximoJugador.IdConexion).habilitarMovimientos(); //habilito movimiento al jugador que tuvo la carta mas alta de la mano.
-                juego.NumeroMano++;
-                juego.CartasJugadas = 0; //reestablesco el valor a 0 nuevamente para la proxima mano.
+                if (juego.TerminoRonda == false)
+                {
+                    Clients.Client(ProximoJugador.IdConexion).habilitarMovimientos(); //habilito movimiento al jugador que tuvo la carta mas alta de la mano.
+                    juego.NumeroMano++;
+                    juego.CartasJugadas = 0; //reestablesco el valor a 0 nuevamente para la proxima mano.
+                }
+                juego.TerminoRonda = false;
 
                 
             }

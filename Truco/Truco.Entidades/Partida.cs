@@ -16,6 +16,8 @@ namespace Truco.Entidades
         public int CartasJugadas { get; set; } // Numero de cartas jugadas en la mano
         public bool EnvidoCantado { get; set; }
         public bool TrucoCantado { get; set; }
+        public bool TerminoRonda { get; set; }
+        public int MayorPuntos { get; set; }
         public int CuantosCantaronPuntos = 0;
 
         public List<Jugador> ListaJugadores = new List<Jugador>();
