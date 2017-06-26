@@ -90,13 +90,10 @@ namespace Truco.Web.Hubs
         {
             Jugador jugador = ObtenerJugador(Context.ConnectionId);
             Clients.All.limpiarTablero();
-            foreach (Cartas cartas in jugador.ListaCartas)
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    //jugador.ListaCartas.Remove();  ACA HAY QUE LIMPIAR LA LISTA DE CARTAS PARA QUE NO ESTEN EN LA PROXIMA RONDA 
-                }
-            }
+            //foreach (Cartas cartas in jugador.ListaCartas)
+            //{
+            //    jugador.ListaCartas.Remove(cartas);
+            //}
             juego.PrepararMano(4);
             juego.ListaJugadores.OrderByDescending(x => x.Mano); //Cada vez que reparto, ordeno la lista en base a la mano. PORQUE SE ORDENARIA POR MANO? SI EL REPARTIR SE EJECUTA CADA VEZ QUE TERMINA UN RONDA
             foreach (var item in juego.Equipo1.ListaJugadores)
@@ -536,22 +533,6 @@ namespace Truco.Web.Hubs
                     {
                         ProximoJugador = item;
                         item.Turno = true;
-
-                        //if (!juego.EnvidoCantado && juego.NumeroMano == 1)
-                        //{
-                        //    Clients.Client(ProximoJugador.IdConexion).showEnvidoBotton();
-                        //    Clients.Client(ProximoJugador.IdConexion).showEnvidoEnvidoBotton();
-                        //    Clients.Client(ProximoJugador.IdConexion).showRealEnvidoButton();
-                        //    Clients.Client(ProximoJugador.IdConexion).showFaltaEnvidoButton();
-                        //}
-
-                        //if (!juego.TrucoCantado)
-                        //{
-                        //    Clients.Client(ProximoJugador.IdConexion).showTrucoBotton();
-                        //    Clients.Client(ProximoJugador.IdConexion).showReTrucoBotton();
-                        //    Clients.Client(ProximoJugador.IdConexion).showVale4Botton();
-                        //}
-
                         break; //Para no seguir recorriendo la lista sin sentido, ya que encontre lo que buscaba.
                     }
                 }
@@ -568,11 +549,13 @@ namespace Truco.Web.Hubs
                     if (juego.Equipo1.ManoGanada == 2)
                     {
                         Clients.All.mostrarmensaje("El equipo 1 gano la ronda");
+                        juego.Equipo1.Puntos++;
                         Repartir();
                     }
                     if (juego.Equipo2.ManoGanada == 2)
                     {
                         Clients.All.mostrarmensaje("El equipo 2 gano la ronda");
+                        juego.Equipo2.Puntos++;
                         Repartir();
                     }
                 }
@@ -597,22 +580,6 @@ namespace Truco.Web.Hubs
                         {
                             ProximoJugador = juego.ListaJugadores[i + 1];
                         }
-
-                        //if (!juego.EnvidoCantado && juego.NumeroMano == 1)
-                        //{
-                        //    Clients.Client(ProximoJugador.IdConexion).showEnvidoBotton();
-                        //    Clients.Client(ProximoJugador.IdConexion).showEnvidoEnvidoBotton();
-                        //    Clients.Client(ProximoJugador.IdConexion).showRealEnvidoButton();
-                        //    Clients.Client(ProximoJugador.IdConexion).showFaltaEnvidoButton();
-                        //}
-                        
-                        //if (!juego.TrucoCantado)
-                        //{
-                        //    Clients.Client(ProximoJugador.IdConexion).showTrucoBotton();
-                        //    Clients.Client(ProximoJugador.IdConexion).showReTrucoBotton();
-                        //    Clients.Client(ProximoJugador.IdConexion).showVale4Botton();
-                        //}
-
                         juego.ListaJugadores[i].Turno = true;
 
                         break;
