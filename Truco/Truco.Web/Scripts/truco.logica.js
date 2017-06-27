@@ -85,10 +85,9 @@ $(function() {
 
     trucoHub.client.mostrarMensajeFinal = function(data) {
         if (data == true) {
-            $("#messages").prepend("<p>" + data + " Gano!</p>");
-            bootbox.alert("GANASTE!");
+            alert("GANASTE!");
         } else {
-            bootbox.alert("PERDISTE!");
+           alert("PERDISTE!");
         }
     };
     $("#bottonEnvido").click(function() {
